@@ -6,14 +6,24 @@ namespace FinalProjMonoGame;
 
 public class Game1 : Game
 {
+    public static Vector2 ScreenCenter;
+
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private SpriteManager _spriteManager;
+    private AudioManager _audioManager;
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        
+        _graphics.IsFullScreen = true;
+        _graphics.PreferredBackBufferWidth = 1920;
+        _graphics.PreferredBackBufferHeight = 1080;
+        
+        ScreenCenter = new Vector2(_graphics.PreferredBackBufferWidth * 0.5f, _graphics.PreferredBackBufferHeight * 0.5f);
     }
 
     protected override void Initialize()
@@ -26,8 +36,8 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        // TODO: use this.Content to load your game content here
+        _audioManager = new AudioManager(Content);
+        _spriteManager = new SpriteManager(Content);
     }
 
     protected override void Update(GameTime gameTime)
@@ -36,7 +46,7 @@ public class Game1 : Game
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        SceneManager.Instance.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -45,7 +55,11 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+
+        SceneManager.Instance.Draw(_spriteBatch);
+        
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
