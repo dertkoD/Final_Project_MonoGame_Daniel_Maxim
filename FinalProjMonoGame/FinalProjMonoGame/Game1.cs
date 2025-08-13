@@ -82,7 +82,6 @@ public class Game1 : Game
         SceneManager.SwitchTo(() =>
         {
             // TODO: здесь регистрируешь игровые объекты/сцены
-            // Например: SceneManager.Add(new GameplayRoot(...));
         });
     }
 }
