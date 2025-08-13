@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,21 +7,28 @@ namespace FinalProjMonoGame;
 
 public class Player : Animation
 {
-    private int speed = 500;
-    private KeyboardState prevKeyState = Keyboard.GetState();
+    private KeyboardState _prevKeys;
+    private enum PlayerState { Idle, Attack, Defend }
 
+    private PlayerState _state = PlayerState.Idle;
+
+    private const string IdleAnim = "PlayerIdle";
+    private const string AttackAnim = "PlayerHit";
+    private const string DefendAnim = "PlayerDefend";
+
+    private bool _facingRight = true;
+    
     public Collider collider;
     
-    private Vector2 prevPos;
-    public Player() : base("NewForm")
+    public Player() : base(IdleAnim)
     {
+        ChangeAnimation(IdleAnim);
+        PlayAnimation(inLoop: true, fps: 8);
+        
         position = Game1.ScreenCenter;
-        scale = new Vector2(0.2f, 0.2f);
-        PlayAnimation();
-        
-        collider = SceneManager.Create<Collider>();
-        
-        AudioManager.PlaySong("Theme");
+        scale = new Vector2(1f, 1f);
+        originPosition = OriginPosition.Center;
+        effect = SpriteEffects.None;
     }
 
     public void OnTrigger(object o)
@@ -41,77 +47,68 @@ public class Player : Animation
     {
         AudioManager.PlaySoundEffect("Bounce");
         
-        position = prevPos;
+        //position = prevPos;
     }
 
     public override void Update(GameTime gameTime)
     {
-        prevPos = position;
+        var keys = Keyboard.GetState();
 
-        KeyboardState state = Keyboard.GetState();
-        if (state.IsKeyDown(Keys.NumPad1))
-        {
-            ChangeAnimation("Normal");
-            PlayAnimation();
-        }
-        if (state.IsKeyDown(Keys.NumPad1))
-        {
-            ChangeAnimation("Duck1");
-            PlayAnimation();
-        }
-        if (state.IsKeyDown(Keys.NumPad2))
-        {
-            ChangeAnimation("Duck2");
-            PlayAnimation();
-        }
-        if (state.IsKeyDown(Keys.NumPad3))
-        {
-            ChangeAnimation("Egret2");
-            PlayAnimation();
-        }
+        bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
         
-        if (state.IsKeyDown(Keys.NumPad9))
+        //KeyboardState state = Keyboard.GetState();
+        
+        // facing direction
+        if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
+            _facingRight = false;
+        else if (keys.IsKeyDown(Keys.D) || keys.IsKeyDown(Keys.Right))
+            _facingRight = true;
+
+        // apply visual flip
+        effect = _facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+        // defend/Attack logic, hold Q to defend (loops while held)
+        if (keys.IsKeyDown(Keys.Q))
         {
-            AudioManager.SongVolume = 0.5f;
+            if (_state != PlayerState.Defend)
+            {
+                _state = PlayerState.Defend;
+                ChangeAnimation(DefendAnim);
+                PlayAnimation(inLoop: true, fps: 8);
+            }
         }
-        if (state.IsKeyDown(Keys.NumPad8))
+        else
         {
-            AudioManager.SoundEffectVolume = 0.2f;
-        }
-        if (state.IsKeyDown(Keys.NumPad7) && prevKeyState.IsKeyUp(Keys.NumPad7))
-        {
-            AudioManager.MuteAudio();
-        }
-        if (state.IsKeyDown(Keys.NumPad6) && prevKeyState.IsKeyUp(Keys.NumPad6))
-        {
-            AudioManager.UnmuteAudio();
+            // one-shot attack on E
+            if (Pressed(Keys.E) && _state != PlayerState.Attack)
+            {
+                _state = PlayerState.Attack;
+                ChangeAnimation(AttackAnim);
+                PlayAnimation(inLoop: false, fps: 12); // play once
+            }
         }
 
-        if (state.IsKeyDown(Keys.D))
+        // return to idle after attack or after Q release
+        if (_state == PlayerState.Attack && !IsAnimating())
         {
-            position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            effect = SpriteEffects.FlipHorizontally;
+            ToIdle();
         }
-        if (state.IsKeyDown(Keys.A))
+        else if (_state == PlayerState.Defend && !keys.IsKeyDown(Keys.Q))
         {
-            position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            effect = SpriteEffects.None;
-        }
-        if (state.IsKeyDown(Keys.W))
-        {
-            position.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        }
-        if (state.IsKeyDown(Keys.S))
-        {
-            position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            ToIdle();
         }
 
-        prevKeyState = state;
+        _prevKeys = keys;
+
+        if (collider != null) collider.rect = rect;
+
         base.Update(gameTime);
-
-        collider.rect = rect;
-       // collider.rect.Size -= new Point(50, 50);
-       // collider.rect.Location += new Point(50, 50);
     }
 
+    private void ToIdle()
+    {
+        _state = PlayerState.Idle;
+        ChangeAnimation(IdleAnim);
+        PlayAnimation(inLoop: true, fps: 8);
+    }
 }
