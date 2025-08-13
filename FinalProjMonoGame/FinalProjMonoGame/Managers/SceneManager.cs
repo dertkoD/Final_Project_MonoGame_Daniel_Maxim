@@ -60,10 +60,6 @@ public class SceneManager : IUpdateable, IDrawable
         {
             updateables[i].Update(gameTime);
         }
-      /*  foreach (IUpdateable updatable in updateables)
-        {
-            updatable.Update(gameTime);   
-        } */
     }
 
     public void Draw(SpriteBatch _spriteBatch)
@@ -72,5 +68,17 @@ public class SceneManager : IUpdateable, IDrawable
         {
             drawable.Draw(_spriteBatch);
         }
+    }
+    
+    public static void Clear()
+    {
+        updateables.Clear();
+        drawables.Clear();
+    }
+
+    public static void SwitchTo(System.Action setup)
+    {
+        Clear();
+        setup?.Invoke();
     }
 }

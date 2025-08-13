@@ -12,6 +12,7 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     private SpriteManager _spriteManager;
     private AudioManager _audioManager;
+    private SpriteFont _quivertFont;
 
     public Game1()
     {
@@ -38,6 +39,18 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _audioManager = new AudioManager(Content);
         _spriteManager = new SpriteManager(Content);
+        
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _audioManager = new AudioManager(Content);
+        _spriteManager = new SpriteManager(Content);
+
+        SpriteFont _quivertFont = Content.Load<SpriteFont>("Fonts/Quivert");
+        SpriteManager.AddSprite("Window", "Sprites/MainMenuBackground");
+        SpriteManager.AddSprite("Button", "Sprites/ButtonShield");
+        SpriteManager.AddSprite("Selector", "Sprites/Selector");
+
+        var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
+        SceneManager.Add(menu);
     }
 
     protected override void Update(GameTime gameTime)
@@ -62,5 +75,14 @@ public class Game1 : Game
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+    
+    private void StartGame()
+    {
+        SceneManager.SwitchTo(() =>
+        {
+            // TODO: здесь регистрируешь игровые объекты/сцены
+            // Например: SceneManager.Add(new GameplayRoot(...));
+        });
     }
 }

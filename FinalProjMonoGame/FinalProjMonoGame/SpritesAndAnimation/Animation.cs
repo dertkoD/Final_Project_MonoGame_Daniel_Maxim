@@ -63,13 +63,35 @@ public class Animation : Sprite
 
     public double GetTimeRemaining(bool normalized = true)
     {
-        int totalFrames = columns + rows;
-        double deltaFrame = 1.0 / fps;
-        double totalTime = totalFrames * deltaFrame;
+        int totalFrames = columns * rows;
+        int currentIndex = index_y * columns + index_x;
+        double timePerFrame = 1.0 / fps;
 
-        float remainingTime = MathHelper.Clamp((float)(totalTime - frameTimer), 0.0f, (float)totalTime);
-        
-        return (normalized)? remainingTime / totalTime : remainingTime;
+        double remainingFrames = (totalFrames - 1 - currentIndex) + (1.0 - MathHelper.Clamp((float)(frameTimer / timePerFrame), 0f, 1f));
+        double remainingTime = remainingFrames * timePerFrame;
+
+        return normalized ? remainingTime / (totalFrames * timePerFrame) : remainingTime;
+    }
+
+    public void MoveNextFrame()
+    {
+        frameTimer = 0;
+
+        if (inLoop)
+        {
+            index_x++;
+            if (index_x == columns)
+            {
+                index_x = 0;
+                index_y = (index_y + 1) % rows;
+            }
+        }
+        else
+        {
+            if (index_x + 1 < columns) index_x++;
+            else if (index_y + 1 < rows) { index_y++; index_x = 0; }
+            else { animating = false; }
+        }
     }
 
     public void PauseAnimation()
@@ -103,34 +125,6 @@ public class Animation : Sprite
             return true;
         
         return false;
-    }
-
-    public void MoveNextFrame()
-    {
-        frameTimer = 0;
-
-        if (inLoop)
-        {
-            index_x++;
-
-            if (index_x == columns)
-            {
-                index_y++;
-                index_y %= rows;
-            }
-
-            index_x %= columns;
-        }
-        else
-        {
-            if (index_x + 1 < columns)
-                index_x++;
-            else if (index_y + 1 < rows)
-            {
-                index_y++;
-                index_x = 0;
-            }
-        }
     }
 
     public override void Update(GameTime gameTime)
