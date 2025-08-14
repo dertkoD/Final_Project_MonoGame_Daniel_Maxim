@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/MainMenuTrack.mp3</SourceFile>
+  <SourceTime>2025-08-14T18:15:40.8789786+03:00</SourceTime>
+  <DestFile>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Content/Audio/Music/MainMenuTrack.xnb</DestFile>
+  <DestTime>2025-08-14T18:32:18.6040119+03:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2025-06-02T13:31:02+03:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2025-06-02T13:31:02+03:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Content/Audio/Music/MainMenuTrack.ogg</string>
+  </BuildOutput>
+</PipelineBuildEvent>

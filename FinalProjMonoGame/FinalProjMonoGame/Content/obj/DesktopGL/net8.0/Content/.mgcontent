@@ -4,6 +4,10 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/GameTrack.mp3</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/MainMenuTrack.mp3</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerDefend.mp3</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerHit.mp3</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Fonts/Quivert.spritefont</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/ButtonShield.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/MainMenuBackground.png</File>
@@ -13,6 +17,10 @@
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Selector.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
