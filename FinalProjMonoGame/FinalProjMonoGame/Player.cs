@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,7 +10,6 @@ public class Player : Animation
 {
     private KeyboardState _prevKeys;
     private enum PlayerState { Idle, Attack, Defend }
-
     private PlayerState _state = PlayerState.Idle;
 
     private const string IdleAnim = "PlayerIdle";
@@ -26,7 +26,7 @@ public class Player : Animation
         PlayAnimation(inLoop: true, fps: 8);
         
         position = Game1.ScreenCenter;
-        scale = new Vector2(1f, 1f);
+        scale = new Vector2(1.5f, 1.5f);
         originPosition = OriginPosition.Center;
         effect = SpriteEffects.None;
     }
@@ -53,10 +53,7 @@ public class Player : Animation
     public override void Update(GameTime gameTime)
     {
         var keys = Keyboard.GetState();
-
         bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
-        
-        //KeyboardState state = Keyboard.GetState();
         
         // facing direction
         if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
@@ -75,6 +72,8 @@ public class Player : Animation
                 _state = PlayerState.Defend;
                 ChangeAnimation(DefendAnim);
                 PlayAnimation(inLoop: true, fps: 8);
+
+                AudioManager.PlaySoundEffect("PlayerDefend", isLoop: false, volume: 1f);
             }
         }
         else
@@ -85,6 +84,8 @@ public class Player : Animation
                 _state = PlayerState.Attack;
                 ChangeAnimation(AttackAnim);
                 PlayAnimation(inLoop: false, fps: 12); // play once
+                
+                AudioManager.PlaySoundEffect("PlayerHit", isLoop: false, volume: 1f);
             }
         }
 

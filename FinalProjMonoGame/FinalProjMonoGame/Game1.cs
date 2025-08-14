@@ -14,6 +14,8 @@ public class Game1 : Game
     private AudioManager _audioManager;
     private SpriteFont _quivertFont;
 
+    private KeyboardState _prevKeys;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -48,21 +50,39 @@ public class Game1 : Game
 
         // character animations
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
-        SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 9, rows: 1);
+        SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
+        
+        // audio content
+        AudioManager.AddSong("MainMenuTrack", "Audio/Music/MainMenuTrack");
+        AudioManager.AddSong("GameTrack", "Audio/Music/GameTrack");
+        AudioManager.AddSoundEffect("PlayerHit", "Audio/SFX/PlayerHit");
+        AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
         
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
         SceneManager.Add(menu);
+        
+        AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
     }
 
     protected override void Update(GameTime gameTime)
     {
+        var ks = Keyboard.GetState();
+        
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
+            ks.IsKeyDown(Keys.Escape))
             Exit();
 
-        SceneManager.Instance.Update(gameTime);
+        // toggle M for music, N for SFX
+        bool Pressed(Keys k) => ks.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
+        if (Pressed(Keys.M))
+            AudioManager.ToggleMusic();
+        if (Pressed(Keys.N))
+            AudioManager.ToggleSfx();
 
+        _prevKeys = ks;
+        
+        SceneManager.Instance.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -71,9 +91,7 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin();
-
         SceneManager.Instance.Draw(_spriteBatch);
-        
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -85,5 +103,7 @@ public class Game1 : Game
         {
             SceneManager.Create<Player>();
         });
+        
+        AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
     }
 }
