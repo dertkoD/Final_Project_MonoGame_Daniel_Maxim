@@ -30,7 +30,7 @@ public class SceneManager : IUpdateable, IDrawable
         return item;
     }
 
-    public static void Add<T>(T item) where T: IDrawable//, IUpdateable
+    public static void Add<T>(T item) where T: IDrawable
     {
         if (item is IUpdateable updateable)
         {

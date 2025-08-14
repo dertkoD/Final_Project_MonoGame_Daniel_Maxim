@@ -33,7 +33,7 @@ public class Player : Animation
 
     public void OnTrigger(object o)
     {
-        AudioManager.PlaySoundEffect("Collect", false, 0.2f);
+        //AudioManager.PlaySoundEffect("Collect", false, 0.2f);
         
         Console.WriteLine("Trigger with " + o.ToString());
 
@@ -45,7 +45,7 @@ public class Player : Animation
     }
     public void OnCollision(object o)
     {
-        AudioManager.PlaySoundEffect("Bounce");
+        //AudioManager.PlaySoundEffect("Bounce");
         
         //position = prevPos;
     }
@@ -99,10 +99,9 @@ public class Player : Animation
         }
 
         _prevKeys = keys;
-
-        if (collider != null) collider.rect = rect;
-
+        
         base.Update(gameTime);
+        if (collider != null) collider.rect = rect; 
     }
 
     private void ToIdle()
