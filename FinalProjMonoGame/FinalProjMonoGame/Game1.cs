@@ -39,16 +39,18 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _audioManager = new AudioManager(Content);
         _spriteManager = new SpriteManager(Content);
+        _quivertFont = Content.Load<SpriteFont>("Fonts/Quivert");
         
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _audioManager = new AudioManager(Content);
-        _spriteManager = new SpriteManager(Content);
-
-        SpriteFont _quivertFont = Content.Load<SpriteFont>("Fonts/Quivert");
+        // main menu UI
         SpriteManager.AddSprite("Window", "Sprites/MainMenuBackground");
         SpriteManager.AddSprite("Button", "Sprites/ButtonShield");
         SpriteManager.AddSprite("Selector", "Sprites/Selector");
 
+        // character animations
+        SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
+        SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 9, rows: 1);
+        SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
+        
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
         SceneManager.Add(menu);
     }
@@ -81,7 +83,7 @@ public class Game1 : Game
     {
         SceneManager.SwitchTo(() =>
         {
-            // TODO: здесь регистрируешь игровые объекты/сцены
+            SceneManager.Create<Player>();
         });
     }
 }
