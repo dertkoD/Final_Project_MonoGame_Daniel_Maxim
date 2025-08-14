@@ -50,7 +50,7 @@ public class Game1 : Game
 
         // character animations
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
-        SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 9, rows: 1);
+        SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
         
         // audio content

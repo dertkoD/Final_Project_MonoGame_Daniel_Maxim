@@ -26,7 +26,7 @@ public class Player : Animation
         PlayAnimation(inLoop: true, fps: 8);
         
         position = Game1.ScreenCenter;
-        scale = new Vector2(1f, 1f);
+        scale = new Vector2(1.5f, 1.5f);
         originPosition = OriginPosition.Center;
         effect = SpriteEffects.None;
     }
