@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
@@ -10,6 +11,13 @@ public class ExplosionFx : Animation
     {
         PlayAnimation(inLoop: false, fps: fps);
     }
+    
+    /*public override void Draw(SpriteBatch sb)
+    {
+        // пока нет активной анимации — ничего не рисуем (убирает «мигание шитом»)
+        if (!IsAnimating()) return;
+        base.Draw(sb);
+    }*/
 
     public override void Update(GameTime gameTime)
     {

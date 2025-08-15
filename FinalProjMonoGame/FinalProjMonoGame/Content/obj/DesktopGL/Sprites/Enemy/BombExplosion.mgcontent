@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/BombExplosion.png</SourceFile>
-  <SourceTime>2025-08-14T15:39:20.8563123+03:00</SourceTime>
+  <SourceTime>2025-08-15T21:31:04.1888929+03:00</SourceTime>
   <DestFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Sprites/Enemy/BombExplosion.xnb</DestFile>
-  <DestTime>2025-08-14T15:57:30.701362+03:00</DestTime>
+  <DestTime>2025-08-15T23:30:58.7050469+03:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T13:31:02+03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

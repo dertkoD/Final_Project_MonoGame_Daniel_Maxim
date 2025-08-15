@@ -83,6 +83,18 @@ C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMo
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHit.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Arrow.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Bomb.xnb
-D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\BombExplosion.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\pixel.xnb
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\HP.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDefend.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHit.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\HP.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\Music\GameTrack.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\Music\GameTrack.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\Music\MainMenuTrack.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\Music\MainMenuTrack.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDefend.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHit.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\PlayerDefend.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\PlayerHit.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\PlayerIdle.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\BombExplosion.xnb

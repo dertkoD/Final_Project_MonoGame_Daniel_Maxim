@@ -4,8 +4,13 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/GameTrack.mp3</File>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/MainMenuTrack.mp3</File>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerDefend.mp3</File>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerHit.mp3</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Fonts/Quivert.spritefont</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/ButtonShield.png</File>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/Arrow.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/Bomb.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/BombExplosion.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/MainMenuBackground.png</File>
@@ -20,6 +25,11 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File>Sprites/Enemy/BombExplosion</File>
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

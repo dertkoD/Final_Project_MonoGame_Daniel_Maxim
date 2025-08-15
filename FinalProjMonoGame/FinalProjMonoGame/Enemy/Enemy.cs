@@ -12,6 +12,8 @@ public abstract class Enemy : Sprite
     public float Gravity { get; set; } = 0f; // 0 = без гравитации
     public int Damage { get; set; } = 10;
     public bool IsAlive { get; private set; } = true;
+    public bool IgnorePlayerCollision { get; set; } = false;
+
 
     // экранная логика
     protected bool hasEnteredViewport = false;
@@ -46,10 +48,40 @@ public abstract class Enemy : Sprite
         OnUpdate(gameTime); // хук для наследников
 
         // уведомление игрока при пересечении (дальше сам игрок решит, что делать)
-        if (player != null && player.collider != null && collider != null)
+        if (player != null && collider != null)
         {
-            if (collider.Intersects(player.collider))
-                collider.Notify(this);
+            // 1) Сначала ТЕЛО — базовый урон
+            if (!IgnorePlayerCollision && player.collider != null && collider.Intersects(player.collider))
+            {
+                if (this is Bomb bomb)
+                {
+                    bomb.Explode();                  // внутри нанесёт урон по AoE
+                    return;
+                }
+                else if (this is Arrow arrow)
+                {
+                    player.Damage(arrow.Damage);     // мгновенный урон по телу
+                    player.ResetDeflectStreak();
+                    arrow.Destroy();                 // стрела исчезает
+                }
+                else
+                {
+                    player.Damage(Damage);
+                    player.ResetDeflectStreak();
+                    this.Destroy();
+                }
+                return; // уже обработали попадание — дальше не идём
+            }
+
+            // 2) Затем — «инструментальные» коллайдеры: меч и щит
+            if (player is Player pl)
+            {
+                if (pl.SwordCollider != null && collider.Intersects(pl.SwordCollider))
+                    pl.SwordCollider.Notify(this); // отражение бомб мечом
+
+                if (pl.ShieldCollider != null && collider.Intersects(pl.ShieldCollider))
+                    pl.ShieldCollider.Notify(this); // отражение стрел щитом
+            }
         }
 
         // после того как объект хоть раз был в экранe — удаляем при выходе
