@@ -7,6 +7,8 @@ namespace FinalProjMonoGame;
 public class Game1 : Game
 {
     public static Vector2 ScreenCenter;
+    public static Rectangle ScreenBounds;
+    public static Point ScreenSize;
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -27,6 +29,8 @@ public class Game1 : Game
         _graphics.PreferredBackBufferHeight = 1080;
         
         ScreenCenter = new Vector2(_graphics.PreferredBackBufferWidth * 0.5f, _graphics.PreferredBackBufferHeight * 0.5f);
+        ScreenSize = new Point(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        ScreenBounds = new Rectangle(0, 0, ScreenSize.X, ScreenSize.Y);
     }
 
     protected override void Initialize()
@@ -58,6 +62,13 @@ public class Game1 : Game
         AudioManager.AddSong("GameTrack", "Audio/Music/GameTrack");
         AudioManager.AddSoundEffect("PlayerHit", "Audio/SFX/PlayerHit");
         AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
+        // enemies
+        SpriteManager.AddSprite("Arrow", "Sprites/Enemy/Arrow");
+        SpriteManager.AddSprite("Bomb", "Sprites/Enemy/Bomb");
+        SpriteManager.AddSprite("Explosion", "Sprites/Enemy/BombExplosion", columns: 3, rows: 2);
+        
+        // debug
+        SpriteManager.AddSprite("Pixel", "Sprites/pixel");
         
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
         SceneManager.Add(menu);
@@ -101,7 +112,14 @@ public class Game1 : Game
     {
         SceneManager.SwitchTo(() =>
         {
-            SceneManager.Create<Player>();
+            var player =SceneManager.Create<Player>();
+            
+            // Расположение двух spawn-точек СРАЗУ за краями экрана
+            var leftSpawn  = new Vector2(-120f, ScreenCenter.Y);
+            var rightSpawn = new Vector2(ScreenBounds.Right + 120f, ScreenCenter.Y);
+
+            var spawner = SceneManager.Create<EnemySpawner>();
+            spawner.Init(player, leftSpawn, rightSpawn);
         });
         
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);

@@ -48,6 +48,9 @@ public class Sprite : IUpdateable, IDrawable
     public virtual void Update(GameTime gameTime)
     {
         SetOrigin(originPosition);
+        
+        var src = sourceRectangle ?? texture.Bounds;
+        rect = GetDestRectangle(src);
     }
 
     protected Rectangle GetDestRectangle(Rectangle rect)
