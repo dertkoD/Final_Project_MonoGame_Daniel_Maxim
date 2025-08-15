@@ -1,0 +1,52 @@
+# --- Build output ---
+**/bin/
+**/obj/
+
+# --- Visual Studio ---
+.vs/
+*.suo
+*.user
+*.userosscache
+*.rsuser
+*.sln.docstates
+
+# --- Rider / ReSharper ---
+.idea/
+*.DotSettings.user
+_ReSharper*/
+*.sln.iml
+
+# --- VS Code ---
+.vscode/
+
+# --- MonoGame Content Pipeline ---
+# Оставляем Content.mgcb и исходники, но игнорим скомпилированные .xnb и кэш
+**/Content/bin/
+**/Content/obj/
+**/*.xnb           # если вдруг хотите коммитить .xnb — удалите эту строку
+**/*.mgcontent
+**/*.mgcache
+**/~*.tmp
+
+# --- NuGet (packages.config проекты) ---
+packages/
+*.nupkg
+*.snupkg
+
+# --- Logs / temp ---
+*.log
+*.dmp
+*.tmp
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editor junk ---
+*.swp
+*.swo
+
+# --- Local config ---
+*.local.json
+appsettings.Development.json
