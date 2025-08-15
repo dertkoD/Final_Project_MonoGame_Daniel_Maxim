@@ -8,6 +8,9 @@ namespace FinalProjMonoGame;
 
 public class Player : Animation
 {
+    public int MaxHP { get; private set; } = 5;
+    public int HP { get; private set; }
+    
     private KeyboardState _prevKeys;
     private enum PlayerState { Idle, Attack, Defend }
     private PlayerState _state = PlayerState.Idle;
@@ -17,11 +20,17 @@ public class Player : Animation
     private const string DefendAnim = "PlayerDefend";
 
     private bool _facingRight = true;
+
+    public int DeflectHealThreshold { get; private set; } = 3;
+    private int _deflectCount = 0;
     
     public Collider collider;
     
+    public event Action<int> OnDeflectHeal;
     public Player() : base(IdleAnim)
     {
+        HP = MaxHP;
+        
         ChangeAnimation(IdleAnim);
         PlayAnimation(inLoop: true, fps: 8);
         
@@ -46,8 +55,6 @@ public class Player : Animation
     public void OnCollision(object o)
     {
         AudioManager.PlaySoundEffect("Bounce");
-        
-        //position = prevPos;
     }
 
     public override void Update(GameTime gameTime)
@@ -111,5 +118,48 @@ public class Player : Animation
         _state = PlayerState.Idle;
         ChangeAnimation(IdleAnim);
         PlayAnimation(inLoop: true, fps: 8);
+    }
+    
+    // player HP system
+    public void Heal(int amount)
+    {
+        if (amount <= 0) return;
+        HP = Math.Min(MaxHP, HP + amount);
+    }
+    
+    public void Damage(int amount)
+    {
+        if (amount <= 0) return;
+        HP = Math.Max(0, HP - amount);
+    }
+    
+    public void SetMaxHp(int max)
+    {
+        MaxHP = Math.Max(1, max);
+        HP = Math.Min(HP, MaxHP);
+    }
+    
+    // deflect -> HP interaction
+    public void SetDeflectHealThreshold(int threshold)
+    {
+        DeflectHealThreshold = threshold;
+        ResetDeflectStreak();
+    }
+
+    public void RegisterDeflect()
+    {
+        _deflectCount++;
+
+        if (_deflectCount >= DeflectHealThreshold)
+        {
+            _deflectCount = 0;
+            Heal(1);
+            OnDeflectHeal?.Invoke(HP);
+        }
+    }
+
+    public void ResetDeflectStreak()
+    {
+        _deflectCount = 0;
     }
 }

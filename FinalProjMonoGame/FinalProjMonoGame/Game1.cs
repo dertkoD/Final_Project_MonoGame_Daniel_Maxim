@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FinalProjMonoGame.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -41,6 +42,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _audioManager = new AudioManager(Content);
         _spriteManager = new SpriteManager(Content);
+        
         _quivertFont = Content.Load<SpriteFont>("Fonts/Quivert");
         
         // main menu UI
@@ -52,6 +54,9 @@ public class Game1 : Game
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
+        
+        // hp ui
+        SpriteManager.AddSprite("HP", "Sprites/Player/HP");
         
         // audio content
         AudioManager.AddSong("MainMenuTrack", "Audio/Music/MainMenuTrack");
@@ -101,9 +106,25 @@ public class Game1 : Game
     {
         SceneManager.SwitchTo(() =>
         {
-            SceneManager.Create<Player>();
+            var player = SceneManager.Create<Player>();
+            //player.SetDeflectHealThreshold(3);
+
+            var hpUi = new HpUI(player)
+            {
+                Position = new Vector2(16, 16),
+                Scale = 1f,
+                Spacing = 6
+            };
+            SceneManager.Add(hpUi);
+
+            var timer = new TimerUI(_quivertFont)
+            {
+                Position = new Vector2(ScreenCenter.X, 35),
+                Scale = 1.5f,
+                AlignCenter = true,
+            };
+            SceneManager.Add(timer);
         });
-        
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
     }
 }

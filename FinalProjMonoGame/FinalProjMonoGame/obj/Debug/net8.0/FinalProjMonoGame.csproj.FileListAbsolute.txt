@@ -81,3 +81,4 @@ C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMo
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDefend.xnb
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHit.ogg
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHit.xnb
+C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\HP.xnb
