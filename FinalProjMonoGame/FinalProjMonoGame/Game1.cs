@@ -181,6 +181,7 @@ public class Game1 : Game
                     var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
                     SceneManager.Add(menu);
                 });
+                AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
             });
         SceneManager.Add(delay);
     }
