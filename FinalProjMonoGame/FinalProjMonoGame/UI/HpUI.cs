@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Vector2 = System.Numerics.Vector2;
-
 namespace FinalProjMonoGame.UI;
 
 public class HpUI : UIElement
@@ -15,7 +13,7 @@ public class HpUI : UIElement
     public int Spacing = 6;
 
     public Color FullTint = Color.White;
-    public Color EmptyTint = new Color(255, 255, 255, 80);
+    public Color EmptyTint = new Color(255, 255, 255, 20);
 
     public HpUI(Player player, string heartSpriteName = "HP")
     {

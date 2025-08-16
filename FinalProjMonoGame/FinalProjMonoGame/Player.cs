@@ -30,9 +30,13 @@ public class Player : Animation
     private const string DefendAnim = "PlayerDefend";
 
     private bool _facingRight = true;
-
-    public int DeflectHealThreshold { get; private set; } = 3;
+    
     private int _deflectCount = 0;
+    
+    public bool ControlIsEnabled { get; private set; } = true;
+    public void SetControlsEnabled(bool enabled) => ControlIsEnabled = enabled;
+    
+    public int DeflectHealThreshold { get; private set; } = 3;
     
     public Collider collider;
     
@@ -122,17 +126,30 @@ public class Player : Animation
     {
         var keys = Keyboard.GetState();
         bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
+     
+        if (HP <= 0)
+        {
+            ControlIsEnabled = false;
+                Game1.Instance.TriggerGameOver(this, 2.0);
+        }
+
+        if (!ControlIsEnabled)
+        {
+            base.Update(gameTime);
+            return;
+        }
         
         // facing direction
         if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
             _facingRight = false;
         else if (keys.IsKeyDown(Keys.D) || keys.IsKeyDown(Keys.Right))
             _facingRight = true;
-
+            
         // apply visual flip
         effect = _facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
         // defend/Attack logic, hold Q to defend (loops while held)
+        
         if (keys.IsKeyDown(Keys.Q))
         {
             if (_state != PlayerState.Defend)
@@ -167,13 +184,11 @@ public class Player : Animation
         }
 
         _prevKeys = keys;
-        
         base.Update(gameTime);
-        
         
         UpdateBodyCollider();     
         UpdateSwordCollider();  
-        UpdateShieldCollider();   
+        UpdateShieldCollider();
     }
     
     private void UpdateBodyCollider()
