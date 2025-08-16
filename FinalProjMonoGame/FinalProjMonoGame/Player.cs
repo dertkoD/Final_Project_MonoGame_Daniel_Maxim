@@ -71,51 +71,90 @@ public class Player : Animation
 
         if (o is Bomb bomb)
         {
-            // Уже отбита? Не трогаем повторно — иначе будет «дрыгать» внутри триггера.
             if (bomb.IgnorePlayerCollision) return;
 
-            // «В другую сторону, откуда прилетела»: просто развернуть вектор.
             Vector2 incoming = bomb.Velocity;
             if (incoming.LengthSquared() < 1f)
-            {
-                // На всякий, если почти стояла – пихнём вперёд от меча
                 incoming = FacingNormal() * 300f;
-            }
 
             Vector2 newVel = -incoming;
-            float speed = Math.Max(incoming.Length(), 300f); // минимальная скорость отбивки
+            float speed = Math.Max(incoming.Length(), 300f);
             newVel = Vector2.Normalize(newVel) * speed;
 
-            bomb.Deflect(newVel); // внутри выставит IgnorePlayerCollision = true
-
-            // Небольшой «тычок» наружу, чтобы сразу выйти из тритга меча и больше не триггериться
+            bomb.Deflect(newVel);
             bomb.position += Vector2.Normalize(newVel) * 8f;
 
             RegisterDeflect();
             AudioManager.PlaySoundEffect("DeflectBomb", false, 1f);
+            return;
+        }
+
+        if (o is Arrow arrow)
+        {
+            if (arrow.IsSpinning) return;
+
+            Vector2 n = FacingNormal();
+            Vector2 incoming = arrow.Velocity;
+            if (incoming.LengthSquared() < 1f) incoming = n * 450f;
+
+            Vector2 reflected = Vector2.Reflect(incoming, n);
+            float keep = 0.45f;
+            float upKick = 420f;
+            Vector2 bounce = reflected * keep + new Vector2(0f, -upKick);
+
+            if (System.Math.Abs(bounce.X) < 120f)
+                bounce.X = 120f * (n.X >= 0 ? 1f : -1f);
+
+            float gravity = 1400f;
+            float spinSpeedDegPerSec = 1080f;
+            arrow.StartSpin(bounce, spinSpeedDegPerSec, gravity);
+
+            RegisterDeflect();
+            AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
         }
     }
 
     private void OnShieldTrigger(object o)
     {
         if (_state != PlayerState.Defend) return;
+
+        if (o is Bomb bomb)
+        {
+            // ВЗРЫВАЕМ сразу, но без урона по игроку из Explode()
+            bomb.Explode(ignorePlayer: true);
+
+            // Штраф за щит
+            Damage(1);
+            ResetDeflectStreak();
+
+            AudioManager.PlaySoundEffect("DeflectBomb", false, 1f);
+            return;
+        }
+
         if (o is Arrow arrow)
         {
-            Vector2 n = FacingNormal();
-            Vector2 newVel = Vector2.Reflect(arrow.Velocity, n) * 1.05f;
-            if (newVel.LengthSquared() < 1f) newVel = n * Math.Max(400f, arrow.Velocity.Length());
-            arrow.Velocity = newVel;
+            // стрелы как раньше: «рикошет + спин + падение»
+            if (arrow.IsSpinning) return;
 
-            // чтобы отлетевшая стрела не била тело
-            arrow.IgnorePlayerCollision = true;
+            Vector2 n = FacingNormal();
+            Vector2 incoming = arrow.Velocity;
+            if (incoming.LengthSquared() < 1f) incoming = -n * 450f;
+
+            Vector2 reflected = Vector2.Reflect(incoming, n);
+            float keep = 0.45f;
+            float upKick = 420f;
+            Vector2 bounce = reflected * keep + new Vector2(0f, -upKick);
+
+            if (System.Math.Abs(bounce.X) < 120f)
+                bounce.X = 120f * (n.X >= 0 ? 1f : -1f);
+
+            float gravity = 1400f;
+            float spinSpeedDegPerSec = 1080f;
+            arrow.StartSpin(bounce, spinSpeedDegPerSec, gravity);
+
             RegisterDeflect();
             AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
         }
-    }
-    
-    public void OnCollision(object o)
-    {
-
     }
 
     public override void Update(GameTime gameTime)

@@ -11,7 +11,7 @@ public class Bomb : Enemy
     public Bomb() : base("Bomb")
     {
         scale = new Vector2(0.15f, 0.15f);
-        Damage = 30;
+        Damage = 2;
         
         originPosition = OriginPosition.Center;
     }
@@ -27,26 +27,32 @@ public class Bomb : Enemy
         Destroy();
     }
 
-    public void Explode()
+    public void Explode(bool ignorePlayer = false)
     {
-        if (exploded) return;    // защита от повторов
+        if (exploded) return;
         exploded = true;
 
-        // урон игроку
-        if (player != null)
+        // отключаем физику и коллизии с игроком
+        Velocity = Vector2.Zero;
+        Gravity = 0f;
+        IgnorePlayerCollision = true;
+
+        // ДОБАВЬ: урон игроку — только если не игнорируем
+        if (!ignorePlayer && player != null && player.collider != null && collider != null)
         {
-            player.Damage(Damage);
-            player.ResetDeflectStreak();
+            if (collider.Intersects(player.collider))
+            {
+                player.Damage(Damage);
+                player.ResetDeflectStreak();
+            }
         }
 
-        // FX взрыва
         var fx = new ExplosionFx("Explosion");
         fx.position = position;
         fx.scale = new Vector2(0.7f, 0.7f);
         SceneManager.Add(fx);
         fx.PlayOnceAndAutoRemove(12);
 
-        // обезвредить бомбу
         Velocity = Vector2.Zero;
         if (collider != null) collider.rect = Rectangle.Empty;
         Destroy();
