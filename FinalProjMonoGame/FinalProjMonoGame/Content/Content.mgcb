@@ -44,6 +44,30 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Quivert.spritefont
 
+#begin Sprites/Backgrounds/Earth.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Backgrounds/Earth.png
+
+#begin Sprites/Backgrounds/GroundGrass.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Backgrounds/GroundGrass.png
+
 #begin Sprites/Backgrounds/VINES - Second.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -176,6 +200,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/pixel.png
 
+#begin Sprites/Player/DeathAnim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Player/DeathAnim.png
+
 #begin Sprites/Player/PlayerDefend.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -211,6 +247,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/Player/PlayerIdle.png
+
+#begin Sprites/Player/TakingDamage.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Player/TakingDamage.png
 
 #begin Sprites/Selector.png
 /importer:TextureImporter
