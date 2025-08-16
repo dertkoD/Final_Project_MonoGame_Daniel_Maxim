@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Vector2 = System.Numerics.Vector2;
-
 namespace FinalProjMonoGame.UI;
 
 public abstract class UIElement: IUpdateable, IDrawable
 {
     // top left default position
-    public Microsoft.Xna.Framework.Vector2 Position { get; set; } = Vector2.Zero;
+    public Vector2 Position { get; set; } = Vector2.Zero;
 
     // checks whether update should run
     public bool Enabled { get; set; } = true;

@@ -10,6 +10,8 @@ public class Game1 : Game
     public static Vector2 ScreenCenter;
     public static Rectangle ScreenBounds;
     public static Point ScreenSize;
+    
+    public static Game1 Instance { get; private set; }
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -21,6 +23,8 @@ public class Game1 : Game
 
     public Game1()
     {
+        Instance = this;
+        
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -49,7 +53,7 @@ public class Game1 : Game
         
         _quivertFont = Content.Load<SpriteFont>("Fonts/Quivert");
         
-        // main menu UI
+        // main menu / endgame UI
         SpriteManager.AddSprite("Window", "Sprites/MainMenuBackground");
         SpriteManager.AddSprite("Button", "Sprites/ButtonShield");
         SpriteManager.AddSprite("Selector", "Sprites/Selector");
@@ -143,5 +147,24 @@ public class Game1 : Game
             SceneManager.Add(timer);
         });
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
+    }
+
+    public void TriggerGameOver(Player player, double delaySeconds)
+    {
+        var delay = new EndGameDelay(
+            delaySeconds,
+            GraphicsDevice,
+            _quivertFont,
+            player,
+            onRestart: StartGame,
+            onMainMenu: () =>
+            {
+                SceneManager.SwitchTo(() =>
+                {
+                    var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
+                    SceneManager.Add(menu);
+                });
+            });
+        SceneManager.Add(delay);
     }
 }

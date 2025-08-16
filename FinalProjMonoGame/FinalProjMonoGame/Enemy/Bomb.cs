@@ -11,7 +11,7 @@ public class Bomb : Enemy
     public Bomb() : base("Bomb")
     {
         scale = new Vector2(0.15f, 0.15f);
-        Damage = 30;
+        Damage = 1;
         
         originPosition = OriginPosition.Center;
     }

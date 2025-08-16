@@ -21,7 +21,6 @@ public class Text : IUpdateable, IDrawable
     public virtual void Update(GameTime gameTime)
     {
         textCenter = font.MeasureString(text) * 0.5f;  
-        
     }
 
     public void Draw(SpriteBatch _spriteBatch)
