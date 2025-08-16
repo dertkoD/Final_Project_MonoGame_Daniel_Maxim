@@ -24,13 +24,40 @@ public class Animation : Sprite
         ChangeAnimation(animationName);
     }
     
+    private void InitFirstFrameAndOrigin()
+    {
+        index_x = 0;
+        index_y = 0;
+        sourceRectangle = spriteSheet[0, 0];
+
+        // СРАЗУ ставим origin под выбранный способ выравнивания,
+        // чтобы первый Draw был уже корректным.
+        switch (originPosition)
+        {
+            case OriginPosition.TopLeft:
+                origin = Vector2.Zero;
+                break;
+            case OriginPosition.Center:
+                origin = new Vector2(
+                    sourceRectangle.Value.Width * 0.5f,
+                    sourceRectangle.Value.Height * 0.5f
+                );
+                break;
+        }
+
+        // Дополнительно — сразу посчитаем dest-rect,
+        // чтобы дебаг-рамки/коллайдеры тоже не мигали
+        rect = GetDestRectangle(sourceRectangle.Value);
+    }
+    
     public void ChangeAnimation(string animationName)
     {
         spriteSheet = new SpriteSheet(SpriteManager.GetSprite(animationName));
-
-        texture = spriteSheet.SpriteSheetInfo.texture; 
+        texture = spriteSheet.SpriteSheetInfo.texture;
         columns = spriteSheet.SpriteSheetInfo.columns;
-        rows = spriteSheet.SpriteSheetInfo.rows;
+        rows    = spriteSheet.SpriteSheetInfo.rows;
+
+        InitFirstFrameAndOrigin(); // <-- добавь это
     }
     
     protected override void SetOrigin(OriginPosition originPosition)
@@ -113,8 +140,8 @@ public class Animation : Sprite
     public void ResetAnimation()
     {
         frameTimer = 0;
-        index_x = 0;
-        index_y = 0;
+        
+        InitFirstFrameAndOrigin();    
     }
 
     bool ShouldGetNextFrame(GameTime gameTime)

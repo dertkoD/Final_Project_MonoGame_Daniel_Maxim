@@ -68,12 +68,29 @@ public class Player : Animation
     private void OnSwordTrigger(object o)
     {
         if (_state != PlayerState.Attack) return;
+
         if (o is Bomb bomb)
         {
-            Vector2 n = FacingNormal();
-            Vector2 newVel = Vector2.Reflect(bomb.Velocity, n);
-            if (newVel.LengthSquared() < 1f) newVel = n * Math.Max(200f, bomb.Velocity.Length());
-            bomb.Deflect(newVel); // выставит IgnorePlayerCollision
+            // Уже отбита? Не трогаем повторно — иначе будет «дрыгать» внутри триггера.
+            if (bomb.IgnorePlayerCollision) return;
+
+            // «В другую сторону, откуда прилетела»: просто развернуть вектор.
+            Vector2 incoming = bomb.Velocity;
+            if (incoming.LengthSquared() < 1f)
+            {
+                // На всякий, если почти стояла – пихнём вперёд от меча
+                incoming = FacingNormal() * 300f;
+            }
+
+            Vector2 newVel = -incoming;
+            float speed = Math.Max(incoming.Length(), 300f); // минимальная скорость отбивки
+            newVel = Vector2.Normalize(newVel) * speed;
+
+            bomb.Deflect(newVel); // внутри выставит IgnorePlayerCollision = true
+
+            // Небольшой «тычок» наружу, чтобы сразу выйти из тритга меча и больше не триггериться
+            bomb.position += Vector2.Normalize(newVel) * 8f;
+
             RegisterDeflect();
             AudioManager.PlaySoundEffect("DeflectBomb", false, 1f);
         }
@@ -154,15 +171,13 @@ public class Player : Animation
         base.Update(gameTime);
         
         
-        // === обновление коллайдеров ===
-        UpdateBodyCollider();     // сужаем
-        UpdateSwordCollider();  // окно атаки
-        UpdateShieldCollider();   // при защите
+        UpdateBodyCollider();     
+        UpdateSwordCollider();  
+        UpdateShieldCollider();   
     }
     
     private void UpdateBodyCollider()
     {
-        // сжимаем прямоугольник вокруг центра
         var r = rect;
         int w = (int)(r.Width * bodyWScale);
         int h = (int)(r.Height * bodyHScale);
@@ -173,14 +188,12 @@ public class Player : Animation
 
     private void UpdateSwordCollider()
     {
-        // активен всю атаку
         bool active = (_state == PlayerState.Attack);
         if (!active) { SwordCollider.rect = Rectangle.Empty; return; }
 
-        // привязываемся к ТЕЛУ (уменьшенный хитбокс), а не к sprite rect
         Rectangle body = (collider != null && collider.rect != Rectangle.Empty) ? collider.rect : rect;
 
-        int w = (int)(body.Width * 0.55f);
+        int w = (int)(body.Width * 0.45f);
         int h = body.Height;
         int y = body.Center.Y - h / 2;
 
@@ -201,7 +214,6 @@ public class Player : Animation
             return;
         }
 
-        // вертикальная «стенка» ближе к центру
         int w = (int)(rect.Width * 0.3f);
         int h = (int)(rect.Height * 0.75f);
         int x = _facingRight ? rect.Center.X : rect.Center.X - w;
@@ -213,7 +225,6 @@ public class Player : Animation
     {
         if (o is Enemy enemy)
         {
-            // получили урон и удалили снаряд
             Damage(enemy.Damage);
             ResetDeflectStreak();
             enemy.Destroy();

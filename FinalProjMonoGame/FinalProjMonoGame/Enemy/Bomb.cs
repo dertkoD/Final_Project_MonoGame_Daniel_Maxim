@@ -6,11 +6,14 @@ public class Bomb : Enemy
 {
     // NEW: чтобы не взрывалась дважды
     private bool exploded = false;
+    public float SpinDegPerSec = 540f;
 
     public Bomb() : base("Bomb")
     {
         scale = new Vector2(0.15f, 0.15f);
         Damage = 30;
+        
+        originPosition = OriginPosition.Center;
     }
 
     public void Deflect(Vector2 newVelocity)
@@ -40,12 +43,24 @@ public class Bomb : Enemy
         var fx = new ExplosionFx("Explosion");
         fx.position = position;
         fx.scale = new Vector2(0.7f, 0.7f);
-        fx.PlayOnceAndAutoRemove(1);
         SceneManager.Add(fx);
+        fx.PlayOnceAndAutoRemove(12);
 
         // обезвредить бомбу
         Velocity = Vector2.Zero;
         if (collider != null) collider.rect = Rectangle.Empty;
         Destroy();
+    }
+    
+    public override void Update(GameTime gameTime)
+    {
+        if (!exploded) // не крутим после взрыва
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            rotation += SpinDegPerSec * dt;
+            if (rotation >= 360f) rotation -= 360f; // чтобы не росло до бесконечности
+        }
+
+        base.Update(gameTime); // физика/столкновения как раньше
     }
 }
