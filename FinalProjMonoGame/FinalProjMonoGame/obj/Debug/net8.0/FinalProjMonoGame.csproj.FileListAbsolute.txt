@@ -98,7 +98,8 @@ D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxi
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\PlayerHit.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\PlayerIdle.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\BombExplosion.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Arrow.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Bomb.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\BombExplosion.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\pixel.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\VINES - Second.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - First.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Fourth.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Second.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Third.xnb

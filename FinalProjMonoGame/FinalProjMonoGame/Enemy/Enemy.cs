@@ -9,13 +9,12 @@ public abstract class Enemy : Sprite
     public Collider collider;
 
     public Vector2 Velocity { get; set; } = Vector2.Zero;
-    public float Gravity { get; set; } = 0f; // 0 = без гравитации
+    public float Gravity { get; set; } = 0f;
     public int Damage { get; set; } = 10;
     public bool IsAlive { get; private set; } = true;
     public bool IgnorePlayerCollision { get; set; } = false;
 
 
-    // экранная логика
     protected bool hasEnteredViewport = false;
     protected float offscreenPadding = 48f;
 
@@ -33,36 +32,41 @@ public abstract class Enemy : Sprite
 
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // простая физика
         var v = Velocity;
         if (Gravity != 0f)  v.Y += Gravity * dt;
         position += Velocity * dt;
         Velocity = v;
 
-        base.Update(gameTime); // обновит rect/origin
+        base.Update(gameTime); 
         if (collider != null) collider.rect = rect;
 
-        // отмечаем факт входа в экран
         if (IsOnScreen()) hasEnteredViewport = true;
 
-        OnUpdate(gameTime); // хук для наследников
+        OnUpdate(gameTime);
 
-        // уведомление игрока при пересечении (дальше сам игрок решит, что делать)
         if (player != null && collider != null)
         {
-            // 1) Сначала ТЕЛО — базовый урон
+            if (player is Player pl)
+            {
+                if (pl.SwordCollider != null && collider.Intersects(pl.SwordCollider))
+                    pl.SwordCollider.Notify(this);
+
+                if (pl.ShieldCollider != null && collider.Intersects(pl.ShieldCollider))
+                    pl.ShieldCollider.Notify(this);
+            }
+
             if (!IgnorePlayerCollision && player.collider != null && collider.Intersects(player.collider))
             {
                 if (this is Bomb bomb)
                 {
-                    bomb.Explode();                  // внутри нанесёт урон по AoE
+                    bomb.Explode();
                     return;
                 }
                 else if (this is Arrow arrow)
                 {
-                    player.Damage(arrow.Damage);     // мгновенный урон по телу
+                    player.Damage(arrow.Damage);
                     player.ResetDeflectStreak();
-                    arrow.Destroy();                 // стрела исчезает
+                    arrow.Destroy();
                 }
                 else
                 {
@@ -70,21 +74,10 @@ public abstract class Enemy : Sprite
                     player.ResetDeflectStreak();
                     this.Destroy();
                 }
-                return; // уже обработали попадание — дальше не идём
-            }
-
-            // 2) Затем — «инструментальные» коллайдеры: меч и щит
-            if (player is Player pl)
-            {
-                if (pl.SwordCollider != null && collider.Intersects(pl.SwordCollider))
-                    pl.SwordCollider.Notify(this); // отражение бомб мечом
-
-                if (pl.ShieldCollider != null && collider.Intersects(pl.ShieldCollider))
-                    pl.ShieldCollider.Notify(this); // отражение стрел щитом
+                return;
             }
         }
 
-        // после того как объект хоть раз был в экранe — удаляем при выходе
         if (hasEnteredViewport && IsCompletelyOffscreen())
             OnExitScreen();
     }
@@ -95,7 +88,6 @@ public abstract class Enemy : Sprite
 
     protected virtual void OnExitScreen() => Destroy();
 
-    // поворот по Velocity (для стрелы)
     protected void FaceVelocity(float deadZone = 0.0001f)
     {
         if (Velocity.LengthSquared() > deadZone)
@@ -117,7 +109,6 @@ public abstract class Enemy : Sprite
     {
     }
 
-    // --- экранные проверки ---
     protected bool IsOnScreen()
     {
         var r = Game1.ScreenBounds;
