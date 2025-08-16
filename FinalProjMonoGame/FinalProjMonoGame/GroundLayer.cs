@@ -18,12 +18,8 @@ public class GroundLayer : IUpdateable, IDrawable
 
     private readonly int _overlapPx; // screen pixels to overlap rows (prevents hairline gaps)
 
-    /// <param name="topTileName">Name in SpriteManager for top row (e.g., "GroundGrass")</param>
-    /// <param name="fillTileName">Name in SpriteManager for fill (e.g., "Earth")</param>
-    /// <param name="groundY">Screen Y of the ground surface (top of Earth)</param>
-    /// <param name="tileScale">Integer scale for pixel art (1,2,3,4...)</param>
-    /// <param name="scrollSpeed">Optional slow drift (default 0)</param>
-    /// <param name="overlapPx">Vertical overlap in screen pixels to hide seams (default 1)</param>
+    public float GlobalYOffset = 0f; // apply a global vertical offset (for transitions)
+
     public GroundLayer(string topTileName, string fillTileName, int groundY, int tileScale = 4, float scrollSpeed = 0f,
         int overlapPx = 1)
     {
@@ -43,14 +39,13 @@ public class GroundLayer : IUpdateable, IDrawable
     }
 
     public void SetGroundY(int groundY) => _groundY = groundY;
+    public void SetYOffset(float y) => GlobalYOffset = y;
 
     public void Update(GameTime gameTime)
     {
         if (Math.Abs(_scrollSpeed) > 0.0001f)
         {
             _scrollOffsetX += _scrollSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            // bound offset by the LCM-ish of widths; using fill width is enough for static case
             int tileWidth = Math.Max(1, _fillW);
             if (_scrollOffsetX >= tileWidth) _scrollOffsetX -= tileWidth;
             if (_scrollOffsetX <= -tileWidth) _scrollOffsetX += tileWidth;
@@ -70,7 +65,7 @@ public class GroundLayer : IUpdateable, IDrawable
         {
             for (int x = startXFill; x < screenW + _fillW * 2; x += _fillW)
             {
-                var dest = new Rectangle(x, y, _fillW, _fillH);
+                var dest = new Rectangle(x, (int)(y + GlobalYOffset), _fillW, _fillH);
                 spriteBatch.Draw(_fillTile, dest, Color.White);
             }
         }
@@ -80,7 +75,7 @@ public class GroundLayer : IUpdateable, IDrawable
         int startXTop = (int)(-_scrollOffsetX) - _topW;
         for (int x = startXTop; x < screenW + _topW * 2; x += _topW)
         {
-            var dest = new Rectangle(x, grassY, _topW, _topH);
+            var dest = new Rectangle(x, (int)(grassY + GlobalYOffset), _topW, _topH);
             spriteBatch.Draw(_topTile, dest, Color.White);
         }
     }

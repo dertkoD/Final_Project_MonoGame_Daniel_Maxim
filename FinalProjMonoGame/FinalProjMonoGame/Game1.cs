@@ -91,10 +91,33 @@ public class Game1 : Game
         // debug
         SpriteManager.AddSprite("Pixel", "Sprites/pixel");
         
-        SceneManager.Add(ParallaxBackground.ForestForMenu());
-        
-        var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
+        var parallax = ParallaxBackground.ForestForMenu();
+        SceneManager.Add(parallax);
+
+        // 2) Переходная "земля", которая заедет снизу при старте
+        var groundTrans = new GroundLayer("GroundGrass", "Earth",
+            groundY: (int)(ScreenSize.Y * 0.79f),
+            tileScale: 6,
+            scrollSpeed: 0f,
+            overlapPx: 15);
+        groundTrans.SetYOffset(ScreenSize.Y); // начнём за пределами экрана снизу
+        SceneManager.Add(groundTrans);
+
+        // 3) Меню
+        var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
         SceneManager.Add(menu);
+
+        // 4) Контроллер анимации перехода меню -> игра
+        var transition = new MenuTransition(
+            parallax,
+            groundTrans,
+            setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
+            startGame: StartGame
+        );
+        SceneManager.Add(transition);
+
+        // 5) По нажатию Start запускаем плавный переход
+        menu.OnStart = () => transition.Begin();
         
         AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
     }
@@ -190,8 +213,29 @@ public class Game1 : Game
             {
                 SceneManager.SwitchTo(() =>
                 {
-                    var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
+                    var parallax = ParallaxBackground.ForestForMenu();
+                    SceneManager.Add(parallax);
+
+                    var groundTrans = new GroundLayer("GroundGrass", "Earth",
+                        groundY: (int)(ScreenSize.Y * 0.79f),
+                        tileScale: 6,
+                        scrollSpeed: 0f,
+                        overlapPx: 15);
+                    groundTrans.SetYOffset(ScreenSize.Y);
+                    SceneManager.Add(groundTrans);
+
+                    var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
                     SceneManager.Add(menu);
+
+                    var transition = new MenuTransition(
+                        parallax,
+                        groundTrans,
+                        setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
+                        startGame: StartGame
+                    );
+                    SceneManager.Add(transition);
+
+                    menu.OnStart = () => transition.Begin();
                 });
                 AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
             });

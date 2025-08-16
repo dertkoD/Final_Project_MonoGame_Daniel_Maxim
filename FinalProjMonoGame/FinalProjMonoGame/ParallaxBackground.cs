@@ -11,6 +11,12 @@ public class ParallaxBackground : IUpdateable, IDrawable
     private readonly int _screenW;
     private readonly int _screenH;
 
+    // runtime control
+    private float _speedMultiplier = 1f; // global speed multiplier
+    private float _speedMultiplierTarget = 1f; // for smooth changes
+    private float _speedLerpTime = 0f; // current time
+    private float _speedLerpDuration = 0f; // duration
+
     public ParallaxBackground(IEnumerable<(string spriteName, float speed, float alpha)> config)
     {
         _screenW = Game1.ScreenSize.X;
@@ -25,7 +31,7 @@ public class ParallaxBackground : IUpdateable, IDrawable
             _layers.Add(new Layer
             {
                 Texture = tex,
-                Speed = speed,
+                BaseSpeed = speed,
                 OffsetX = 0f,
                 Scale = scale,
                 Alpha = MathHelper.Clamp(alpha, 0f, 1f)
@@ -33,21 +39,45 @@ public class ParallaxBackground : IUpdateable, IDrawable
         }
     }
 
+    /// <summary>Immediately sets the global speed multiplier (1 = normal, 0 = stop).</summary>
+    public void SetSpeedMultiplier(float m) => _speedMultiplier = _speedMultiplierTarget = MathHelper.Clamp(m, 0f, 5f);
+
+    /// <summary>Smoothly transitions to target multiplier over duration seconds.</summary>
+    public void SmoothSpeed(float targetMultiplier, float durationSec = 0.5f)
+    {
+        _speedMultiplierTarget = MathHelper.Clamp(targetMultiplier, 0f, 5f);
+        _speedLerpDuration = Math.Max(0.0001f, durationSec);
+        _speedLerpTime = 0f;
+    }
+
+    /// <summary>Convenience: smoothly stop parallax.</summary>
+    public void SmoothStop(float durationSec = 0.5f) => SmoothSpeed(0f, durationSec);
+
     public void Update(GameTime gameTime)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        // ease global speed multiplier if needed
+        if (Math.Abs(_speedMultiplier - _speedMultiplierTarget) > 0.0001f)
+        {
+            _speedLerpTime += dt;
+            float t = MathHelper.Clamp(_speedLerpTime / _speedLerpDuration, 0f, 1f);
+            // Smoothstep easing
+            t = t * t * (3f - 2f * t);
+            _speedMultiplier = MathHelper.Lerp(_speedMultiplier, _speedMultiplierTarget, t);
+        }
+
         foreach (var layer in _layers)
         {
-            if (Math.Abs(layer.Speed) < 0.0001f) continue;
+            float speed = layer.BaseSpeed * _speedMultiplier;
+            if (Math.Abs(speed) < 0.0001f) continue;
 
-            layer.OffsetX += layer.Speed * dt;
+            layer.OffsetX += speed * dt;
 
             // wrap offset to keep values bounded
             float tileW = layer.Texture.Width * layer.Scale;
             if (tileW <= 0.001f) continue;
 
-            // keep OffsetX in [-tileW, tileW)
             if (layer.OffsetX >= tileW) layer.OffsetX -= tileW;
             if (layer.OffsetX <= -tileW) layer.OffsetX += tileW;
         }
@@ -65,11 +95,8 @@ public class ParallaxBackground : IUpdateable, IDrawable
             int drawH = _screenH;
 
             // starting X so that we always cover the whole screen
-            // We scroll to the LEFT when Speed > 0 (i.e., texture moves left)
             int startX = (int)-layer.OffsetX - drawW; // one tile to the left for safety
 
-            // Draw enough tiles to cover the screen + one extra on each side
-            // This also handles both positive and negative speeds.
             for (int x = startX; x < _screenW + drawW * 2; x += drawW)
             {
                 var dest = new Rectangle(x, 0, drawW, drawH);
@@ -81,20 +108,18 @@ public class ParallaxBackground : IUpdateable, IDrawable
     // ===== Convenience factory setups for your forest pack =====
     public static ParallaxBackground ForestForMenu()
     {
-        // Slower, gentle movement for menu
         return new ParallaxBackground(new (string, float, float)[]
         {
             ("WoodsFourth", 5f, 1f), // far
             ("WoodsThird", 10f, 1f),
             ("WoodsSecond", 15f, 1f),
             ("WoodsFirst", 22f, 1f), // near
-            ("Vines", 28f, 0.95f) // nearest decorative layer (slightly dim)
+            ("Vines", 28f, 0.95f)
         });
     }
 
     public static ParallaxBackground ForestForGame()
     {
-        // Slightly faster to feel alive during gameplay
         return new ParallaxBackground(new (string, float, float)[]
         {
             ("WoodsFourth", 6f, 1f), // far
