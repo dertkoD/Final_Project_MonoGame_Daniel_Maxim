@@ -62,6 +62,8 @@ public class Game1 : Game
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerHit", "Sprites/Player/PlayerHit", columns: 8, rows: 1);
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
+        SpriteManager.AddSprite("TakingDamage", "Sprites/Player/TakingDamage", columns: 3, rows: 1);
+        SpriteManager.AddSprite("Death", "Sprites/Player/DeathAnim", columns: 10, rows: 1);
         
         // hp ui
         SpriteManager.AddSprite("HP", "Sprites/Player/HP");
@@ -83,6 +85,8 @@ public class Game1 : Game
         SpriteManager.AddSprite("WoodsThird","Sprites/Backgrounds/WOODS - Third");
         SpriteManager.AddSprite("WoodsFourth","Sprites/Backgrounds/WOODS - Fourth");
         SpriteManager.AddSprite("Vines","Sprites/Backgrounds/VINES - Second");
+        SpriteManager.AddSprite("Earth","Sprites/Backgrounds/Earth");
+        SpriteManager.AddSprite("GroundGrass","Sprites/Backgrounds/GroundGrass");
         
         // debug
         SpriteManager.AddSprite("Pixel", "Sprites/pixel");
@@ -137,7 +141,15 @@ public class Game1 : Game
                 ("WoodsSecond", 0f, 1f),
                 ("WoodsFirst",  0f, 1f),
                 ("Vines",       0f, 0.95f)
-            }));            
+            }));
+            
+            var ground = new GroundLayer("GroundGrass", "Earth",
+                groundY: (int)(ScreenSize.Y * 0.79f),
+                tileScale: 6,
+                scrollSpeed: 0f,
+                overlapPx: 15);
+            SceneManager.Add(ground);
+            
             var player =SceneManager.Create<Player>();
             
             // Расположение двух spawn-точек СРАЗУ за краями экрана
