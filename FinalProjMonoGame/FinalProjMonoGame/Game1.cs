@@ -67,13 +67,23 @@ public class Game1 : Game
         AudioManager.AddSong("GameTrack", "Audio/Music/GameTrack");
         AudioManager.AddSoundEffect("PlayerHit", "Audio/SFX/PlayerHit");
         AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
+        
         // enemies
         SpriteManager.AddSprite("Arrow", "Sprites/Enemy/Arrow");
         SpriteManager.AddSprite("Bomb", "Sprites/Enemy/Bomb");
         SpriteManager.AddSprite("Explosion", "Sprites/Enemy/BombExplosion", columns: 3, rows: 2);
         
+        // background
+        SpriteManager.AddSprite("WoodsFirst","Sprites/Backgrounds/WOODS - First");
+        SpriteManager.AddSprite("WoodsSecond","Sprites/Backgrounds/WOODS - Second");
+        SpriteManager.AddSprite("WoodsThird","Sprites/Backgrounds/WOODS - Third");
+        SpriteManager.AddSprite("WoodsFourth","Sprites/Backgrounds/WOODS - Fourth");
+        SpriteManager.AddSprite("Vines","Sprites/Backgrounds/VINES - Second");
+        
         // debug
         SpriteManager.AddSprite("Pixel", "Sprites/pixel");
+        
+        SceneManager.Add(ParallaxBackground.ForestForMenu());
         
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: StartGame);
         SceneManager.Add(menu);
@@ -117,6 +127,13 @@ public class Game1 : Game
     {
         SceneManager.SwitchTo(() =>
         {
+            SceneManager.Add(new ParallaxBackground(new (string,float,float)[] {
+                ("WoodsFourth", 0f, 1f),
+                ("WoodsThird",  0f, 1f),
+                ("WoodsSecond", 0f, 1f),
+                ("WoodsFirst",  0f, 1f),
+                ("Vines",       0f, 0.95f)
+            }));            
             var player =SceneManager.Create<Player>();
             
             // Расположение двух spawn-точек СРАЗУ за краями экрана
