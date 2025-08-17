@@ -72,17 +72,17 @@ public class MenuTransition : IUpdateable, IDrawable
             return x < 0.5f ? 4f * x * x * x : 1f - (float)Math.Pow(-2f * x + 2f, 3f) / 2f;
         }
 
-        // 1) Menu slide up (0..menuSlideTime)
+        // Menu slide up
         float tm = Math.Min(_t / _menuSlideTime, 1f);
         float menuY = MathHelper.Lerp(_menuStartY, _menuEndY, EaseOutCubic(tm));
         _setMenuSlideOffsetY?.Invoke(menuY);
 
-        // 2) Ground slides in (start immediately; lasts groundSlideTime)
+        // Ground slides in
         float tg = Math.Min(_t / _groundSlideTime, 1f);
         float groundY = MathHelper.Lerp(_groundStartY, _groundEndY, EaseInOutCubic(tg));
         _ground.SetYOffset(groundY);
 
-        // 3) When both finished, start the game
+        // When both finished, start the game
         if (tm >= 1f && tg >= 1f)
         {
             _phase = Phase.Done;

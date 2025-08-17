@@ -11,7 +11,7 @@ public abstract class Menu : IUpdateable, IDrawable
     protected readonly GraphicsDevice Gd;
     protected readonly SpriteFont Font;
 
-    /// <summary>Used by animated transitions (e.g. slide the whole menu vertically).</summary>
+    /// Used by animated transitions (e.g. slide the whole menu vertically)
     public float SlideOffsetY { get; set; } = 0f;
 
     // Sprite names (override if needed)
@@ -19,11 +19,11 @@ public abstract class Menu : IUpdateable, IDrawable
     protected virtual string ButtonSpriteName => "Button";
     protected virtual string SelectorSpriteName => "Selector";
 
-    // Layout defaults (override if needed)
+    // Layout defaults
     protected virtual Point WindowSize => new Point(1800, 800);
     protected virtual Point ButtonSize => new Point(WindowSize.X - 1000, 240);
 
-    // Optional title (override to show a title)
+    // Optional title
     protected virtual string Title => null;
     protected virtual Vector2 TitleOffset => new Vector2(0, -160f);
     protected virtual float TitleScale => 2.2f;
@@ -52,7 +52,7 @@ public abstract class Menu : IUpdateable, IDrawable
         UpdateLayout();
     }
 
-    /// <summary>Create a ready-to-use button with our menu visuals.</summary>
+    /// Create a ready-to-use button with our menu visuals
     protected Button CreateButton(string text, Action<Button> onClick)
     {
         var b = new Button(Gd);
@@ -62,13 +62,13 @@ public abstract class Menu : IUpdateable, IDrawable
         return b;
     }
 
-    /// <summary>Add a button and tell where it should be (relative to screen center).</summary>
+    /// Add a button and tell where it should be (relative to screen center)
     protected void AddButton(Button b, Vector2 baseCenterOffset)
     {
         entries.Add((b, baseCenterOffset));
     }
 
-    /// <summary>Called when Enter is pressed. Default: invoke the selected button's click handler.</summary>
+    /// Called when Enter is pressed. Default: invoke the selected button's click handler.
     protected virtual void OnEnterPressed(Button current)
     {
         current?.IsClicked?.Invoke(current);
@@ -174,6 +174,6 @@ public abstract class Menu : IUpdateable, IDrawable
     private static Rectangle CenteredRect(Point size, Vector2 center) =>
         new((int)(center.X - size.X / 2f), (int)(center.Y - size.Y / 2f), size.X, size.Y);
 
-    /// <summary>Derived classes must add their buttons here via CreateButton + AddButton.</summary>
+    /// Derived classes must add their buttons here via CreateButton + AddButton
     protected abstract void BuildContent();
 }
