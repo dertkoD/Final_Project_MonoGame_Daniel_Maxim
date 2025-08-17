@@ -10,7 +10,7 @@ public abstract class Enemy : Sprite
 
     public Vector2 Velocity { get; set; } = Vector2.Zero;
     public float Gravity { get; set; } = 0f;
-    public int Damage { get; set; } = 10;
+    public virtual int Damage { get; protected set; } = 0;
     public bool IsAlive { get; private set; } = true;
     public bool IgnorePlayerCollision { get; set; } = false;
 
@@ -55,25 +55,9 @@ public abstract class Enemy : Sprite
                     pl.ShieldCollider.Notify(this);
             }
 
-            if (!IgnorePlayerCollision && player.collider != null && collider.Intersects(player.collider))
+            if (!IgnorePlayerCollision && player?.BodyCollider != null && collider.Intersects(player.BodyCollider))
             {
-                if (this is Bomb bomb)
-                {
-                    bomb.Explode();
-                    return;
-                }
-                else if (this is Arrow arrow)
-                {
-                    player.Damage(arrow.Damage);
-                    player.ResetDeflectStreak();
-                    arrow.Destroy();
-                }
-                else
-                {
-                    player.Damage(Damage);
-                    player.ResetDeflectStreak();
-                    this.Destroy();
-                }
+                player.BodyCollider.Notify(this);
                 return;
             }
         }

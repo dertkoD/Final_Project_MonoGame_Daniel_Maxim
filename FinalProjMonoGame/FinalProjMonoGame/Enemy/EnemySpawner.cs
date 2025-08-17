@@ -62,7 +62,6 @@ public class EnemySpawner : IDrawable, IUpdateable
     {
     }
 
-    // ===== Внутреннее =====
     private void ResetTimer()
     {
         _timer = Lerp(MinInterval, MaxInterval, (float)_rng.NextDouble());
@@ -70,14 +69,11 @@ public class EnemySpawner : IDrawable, IUpdateable
 
     private void SpawnOne()
     {
-        // Случайная точка
         Vector2 spawn = _points[_rng.Next(_points.Length)];
-
-        // Если точка на экране — сдвинем её за пределы (безопасный оффскрин)
+        
         if (IsOnScreen(spawn))
             spawn = PushOffscreen(spawn);
-
-        // Случайный тип врага: 0 — стрелa, 1 — бомбa
+        
         if (_rng.Next(2) == 0)
             SpawnArrow(spawn);
         else
@@ -96,7 +92,6 @@ public class EnemySpawner : IDrawable, IUpdateable
 
         float speed = Lerp(ArrowSpeedMin, ArrowSpeedMax, (float)_rng.NextDouble());
         arrow.Velocity = toPlayer * speed;
-        arrow.Damage = 10;
     }
 
     private void SpawnBomb(Vector2 spawn)
@@ -107,7 +102,7 @@ public class EnemySpawner : IDrawable, IUpdateable
 
         float g = BombGravity;
         float t = Lerp(BombTimeMin, BombTimeMax, (float)_rng.NextDouble());
-        if (t < 0.2f) t = 0.2f; // на всякий
+        if (t < 0.2f) t = 0.2f;
 
         Vector2 delta = _player.position - spawn;
         float vx = delta.X / t;
@@ -124,11 +119,10 @@ public class EnemySpawner : IDrawable, IUpdateable
         return Game1.ScreenBounds.Contains(new Point((int)p.X, (int)p.Y));
     }
 
-    // Сдвигаем точку за границу ближайшего края
     private static Vector2 PushOffscreen(Vector2 p, float pad = 64f)
     {
         var r = Game1.ScreenBounds;
-        // Расстояние до краёв
+
         float left = Math.Abs(p.X - r.Left);
         float right = Math.Abs(r.Right - p.X);
         float top = Math.Abs(p.Y - r.Top);
@@ -139,7 +133,7 @@ public class EnemySpawner : IDrawable, IUpdateable
         if (m == left) return new Vector2(r.Left - pad, p.Y);
         if (m == right) return new Vector2(r.Right + pad, p.Y);
         if (m == top) return new Vector2(p.X, r.Top - pad);
-        /* m == bottom */
+
         return new Vector2(p.X, r.Bottom + pad);
     }
 }

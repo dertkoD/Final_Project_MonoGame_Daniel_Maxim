@@ -4,7 +4,6 @@ namespace FinalProjMonoGame;
 
 public class Bomb : Enemy
 {
-    // NEW: чтобы не взрывалась дважды
     private bool exploded = false;
     public float SpinDegPerSec = 540f;
 
@@ -32,15 +31,13 @@ public class Bomb : Enemy
         if (exploded) return;
         exploded = true;
 
-        // отключаем физику и коллизии с игроком
         Velocity = Vector2.Zero;
         Gravity = 0f;
         IgnorePlayerCollision = true;
 
-        // ДОБАВЬ: урон игроку — только если не игнорируем
-        if (!ignorePlayer && player != null && player.collider != null && collider != null)
+        if (!ignorePlayer && player != null && player.BodyCollider != null && collider != null)
         {
-            if (collider.Intersects(player.collider))
+            if (collider.Intersects(player.BodyCollider))
             {
                 player.Damage(Damage);
                 player.ResetDeflectStreak();
@@ -60,13 +57,13 @@ public class Bomb : Enemy
     
     public override void Update(GameTime gameTime)
     {
-        if (!exploded) // не крутим после взрыва
+        if (!exploded) 
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             rotation += SpinDegPerSec * dt;
-            if (rotation >= 360f) rotation -= 360f; // чтобы не росло до бесконечности
+            if (rotation >= 360f) rotation -= 360f;
         }
 
-        base.Update(gameTime); // физика/столкновения как раньше
+        base.Update(gameTime);
     }
 }

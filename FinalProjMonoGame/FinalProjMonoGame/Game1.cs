@@ -94,20 +94,19 @@ public class Game1 : Game
         var parallax = ParallaxBackground.ForestForMenu();
         SceneManager.Add(parallax);
 
-        // 2) Переходная "земля", которая заедет снизу при старте
         var groundTrans = new GroundLayer("GroundGrass", "Earth",
             groundY: (int)(ScreenSize.Y * 0.79f),
             tileScale: 6,
             scrollSpeed: 0f,
             overlapPx: 15);
-        groundTrans.SetYOffset(ScreenSize.Y); // начнём за пределами экрана снизу
+        groundTrans.SetYOffset(ScreenSize.Y);
         SceneManager.Add(groundTrans);
 
-        // 3) Меню
+        // Меню
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
         SceneManager.Add(menu);
 
-        // 4) Контроллер анимации перехода меню -> игра
+        // Контроллер анимации перехода меню -> игра
         var transition = new MenuTransition(
             parallax,
             groundTrans,
