@@ -73,6 +73,9 @@ public class Game1 : Game
         AudioManager.AddSong("GameTrack", "Audio/Music/GameTrack");
         AudioManager.AddSoundEffect("PlayerHit", "Audio/SFX/PlayerHit");
         AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
+        AudioManager.AddSoundEffect("PlayerHurt", "Audio/SFX/PlayerHurt");
+        AudioManager.AddSoundEffect("PlayerDeath", "Audio/SFX/PlayerDeath");
+
         
         // enemies
         SpriteManager.AddSprite("Arrow", "Sprites/Enemy/Arrow");

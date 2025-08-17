@@ -120,3 +120,5 @@ C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMo
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\pixel.xnb
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\DeathAnim.xnb
 C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\TakingDamage.xnb
+C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDeath.xnb
+C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHurt.xnb

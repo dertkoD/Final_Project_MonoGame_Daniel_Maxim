@@ -360,6 +360,8 @@ public class Player : Animation
             _state = PlayerState.Hurt;
             ChangeAnimation(TakingDamageAnim);
             PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
+            
         }
         else
         {
@@ -367,6 +369,7 @@ public class Player : Animation
             ControlIsEnabled = false;
             ChangeAnimation(DeathAnim);
             PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerDeath", isLoop: false, volume: 1f);
             Game1.Instance.TriggerGameOver(this, 2.0);
         }
     }

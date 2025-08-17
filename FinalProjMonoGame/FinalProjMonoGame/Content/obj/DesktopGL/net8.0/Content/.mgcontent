@@ -6,8 +6,10 @@
   <SourceFiles>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/GameTrack.mp3</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/Music/MainMenuTrack.mp3</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerDeath.mp3</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerDefend.mp3</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerHit.mp3</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Audio/SFX/PlayerHurt.mp3</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Fonts/Quivert.spritefont</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Backgrounds/Earth.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Backgrounds/GroundGrass.png</File>
@@ -30,6 +32,8 @@
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Selector.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
