@@ -57,6 +57,7 @@ public class Game1 : Game
         SpriteManager.AddSprite("Window", "Sprites/MainMenuBackground");
         SpriteManager.AddSprite("Button", "Sprites/ButtonShield");
         SpriteManager.AddSprite("Selector", "Sprites/Selector");
+        SpriteManager.AddSprite("HelpIcon", "Sprites/HelpIcon");
 
         // character animations
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);

@@ -188,6 +188,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Enemy/BombExplosion.png;Sprites/Enemy/BombExplosion
 
+#begin Sprites/HelpIcon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/HelpIcon.png
+
 #begin Sprites/MainMenuBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -22,6 +22,7 @@
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/Arrow.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/Bomb.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/BombExplosion.png</File>
+    <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/HelpIcon.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/MainMenuBackground.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/pixel.png</File>
     <File>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/DeathAnim.png</File>
@@ -50,6 +51,7 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Sprites/Enemy/BombExplosion</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

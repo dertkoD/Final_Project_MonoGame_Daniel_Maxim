@@ -90,7 +90,5 @@ public class MenuTransition : IUpdateable, IDrawable
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
-    }
+    public void Draw(SpriteBatch spriteBatch) {}
 }

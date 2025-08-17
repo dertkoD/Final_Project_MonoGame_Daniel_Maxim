@@ -1,11 +1,12 @@
 ﻿using System;
+using FinalProjMonoGame.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace FinalProjMonoGame;
 
-public class Button : IUpdateable, IDrawable
+public class Button : UIElement
 {
     public Rectangle Bounds;
 
@@ -17,7 +18,7 @@ public class Button : IUpdateable, IDrawable
     private float textureScale = 1f;
 
     // Режимы отрисовки
-    private bool useSprite = false;
+    private bool useSprite = true;
     private bool stretchToBounds = true; // ВАЖНО: по умолчанию растягиваем под Bounds
 
     // Фолбек-заливка
@@ -28,8 +29,7 @@ public class Button : IUpdateable, IDrawable
     private Color baseTint = Color.White;
     private Color hoverTint = Color.White;
     private bool isHovering;
-    private bool wasPressedLastFrame;
-
+    
     // Текст
     private SpriteFont font;
     private string text = "";
@@ -39,13 +39,24 @@ public class Button : IUpdateable, IDrawable
     // Слои
     private float layerDepth = 0.5f;
 
+    private MouseState prevMouse;
+    
     // Клик
     public Action<Button> IsClicked;
 
+    
     public Button(GraphicsDevice gd)
     {
         fallbackPixel = new Texture2D(gd, 1, 1);
         fallbackPixel.SetData(new[] { Color.White });
+
+        Bounds = new Rectangle(
+            (int)(Game1.ScreenCenter.X - 200),
+            (int)(Game1.ScreenCenter.Y - 40),
+            400, 80
+        );
+
+        prevMouse = Mouse.GetState();
     }
 
     // ---------- ПУБЛИЧНОЕ API ----------
@@ -81,23 +92,9 @@ public class Button : IUpdateable, IDrawable
         textScale = scale;
     }
 
-    public void SetLayerDepth(float depth) => layerDepth = MathHelper.Clamp(depth, 0f, 1f);
-
-    /// <summary>Установить прямоугольник кнопки (позиция и размер).</summary>
+    public void SetLayerDepth(float depth) => layerDepth = MathHelper.Clamp(depth, 0f, 1f); 
     public void SetBounds(Rectangle rect) => Bounds = rect;
-
-    /// <summary>Изменить только размер (оставляя позицию).</summary>
-    public void SetSize(int width, int height)
-    {
-        Bounds = new Rectangle(Bounds.X, Bounds.Y, width, height);
-    }
-
-    /// <summary>Изменить только позицию (оставляя размер).</summary>
-    public void SetPosition(int x, int y)
-    {
-        Bounds = new Rectangle(x, y, Bounds.Width, Bounds.Height);
-    }
-
+    
     /// <summary>Установить размер по центру в точке.</summary>
     public void SetCenteredBounds(Point size, Vector2 center)
     {
@@ -109,25 +106,23 @@ public class Button : IUpdateable, IDrawable
 
     // ---------- ЛОГИКА ----------
 
-    public void Update(GameTime gameTime)
+    protected override void OnUpdate(GameTime gameTime)
     {
-        var mouse = Mouse.GetState();
-        isHovering = Bounds.Contains(mouse.Position);
+        var ms = Mouse.GetState();
+        
+        isHovering = Bounds.Contains(ms.Position);
 
-        bool pressedNow = mouse.LeftButton == ButtonState.Pressed;
-        bool wasPressed = wasPressedLastFrame;
-
-        if (pressedNow && !wasPressed)
-            wasPressedLastFrame = true;
-
-        bool releasedNow = mouse.LeftButton == ButtonState.Released && wasPressedLastFrame;
-        if (releasedNow && isHovering)
+        bool releasedInside = isHovering 
+                       && ms.LeftButton == ButtonState.Pressed
+                       && prevMouse.LeftButton == ButtonState.Released;
+        
+        if (releasedInside)
             IsClicked?.Invoke(this);
 
-        if (!pressedNow) wasPressedLastFrame = false;
+        prevMouse = ms;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    protected override void OnDraw(SpriteBatch spriteBatch)
     {
         Color tint = isHovering ? hoverTint : baseTint;
 
@@ -135,7 +130,8 @@ public class Button : IUpdateable, IDrawable
         if (!useSprite)
         {
             if (fillColor.A > 0)
-                spriteBatch.Draw(fallbackPixel, Bounds, null, fillColor, 0f, Vector2.Zero, SpriteEffects.None, layerDepth);
+                spriteBatch.Draw(fallbackPixel, Bounds, null, fillColor, 0f, 
+                    Vector2.Zero, SpriteEffects.None, layerDepth);
         }
         else if (spriteSheet?.texture != null && Bounds.Width > 0 && Bounds.Height > 0)
         {
@@ -166,21 +162,18 @@ public class Button : IUpdateable, IDrawable
             else
             {
                 // Старый режим: рисуем по scale по центру Bounds
-                Vector2 scaled = new Vector2(src.Width * textureScale, src.Height * textureScale);
-                Vector2 pos = new Vector2(
-                    Bounds.X + (Bounds.Width - scaled.X) / 2f,
-                    Bounds.Y + (Bounds.Height - scaled.Y) / 2f
-                );
+                Vector2 center = new(Bounds.X + Bounds.Width / 2f, Bounds.Y + Bounds.Height / 2f);
+                Vector2 origin = new(src.Width / 2f, src.Height / 2f);
                 // Снэп к пиксельной сетке
-                pos = new Vector2((int)Math.Round(pos.X), (int)Math.Round(pos.Y));
+                //pos = new Vector2((int)Math.Round(pos.X), (int)Math.Round(pos.Y));
 
                 spriteBatch.Draw(
                     texture: spriteSheet.texture,
-                    position: pos,
+                    position: center,
                     sourceRectangle: src,
                     color: tint,
                     rotation: 0f,
-                    origin: Vector2.Zero,
+                    origin: origin,
                     scale: textureScale,
                     effects: SpriteEffects.None,
                     layerDepth: layerDepth
@@ -192,8 +185,8 @@ public class Button : IUpdateable, IDrawable
         if (font != null && !string.IsNullOrEmpty(text))
         {
             Vector2 tsize = font.MeasureString(text) * textScale;
-            Vector2 center = new Vector2(Bounds.X + Bounds.Width / 2f, Bounds.Y + Bounds.Height / 2f);
-            center = new Vector2((int)Math.Round(center.X), (int)Math.Round(center.Y));
+            Vector2 center = new(Bounds.X + Bounds.Width / 2f, Bounds.Y + Bounds.Height / 2f);
+            center = new((int)Math.Round(center.X), (int)Math.Round(center.Y));
 
             // Лёгкая тень + основной
             spriteBatch.DrawString(font, text, center + new Vector2(1, 1), Color.Black * 0.6f,

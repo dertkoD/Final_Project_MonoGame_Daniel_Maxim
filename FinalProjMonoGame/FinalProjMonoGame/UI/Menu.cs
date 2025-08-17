@@ -30,13 +30,13 @@ public abstract class Menu : IUpdateable, IDrawable
     protected virtual Color TitleColor => Color.White;
 
     protected readonly List<(Button btn, Vector2 baseCenterOffset)> entries = new();
-    protected int selected = 0;
-    private KeyboardState prev;
-
+    
+    protected int selected = -1;
+    
     private SpriteSheetInfo windowSheet;
     private SpriteSheetInfo selectorSheet;
     private Rectangle windowRectBase; // centered around ScreenCenter
-    private Rectangle windowRectDraw; // actually drawn (with SlideOffsetY applied)
+    protected Rectangle windowRectDraw; // actually drawn (with SlideOffsetY applied)
 
     protected Menu(GraphicsDevice gd, SpriteFont font)
     {
@@ -47,7 +47,7 @@ public abstract class Menu : IUpdateable, IDrawable
         selectorSheet = SpriteManager.GetSprite(SelectorSpriteName);
 
         windowRectBase = CenteredRect(WindowSize, Game1.ScreenCenter);
-
+        
         BuildContent();
         UpdateLayout();
     }
@@ -67,26 +67,26 @@ public abstract class Menu : IUpdateable, IDrawable
     {
         entries.Add((b, baseCenterOffset));
     }
-
-    /// Called when Enter is pressed. Default: invoke the selected button's click handler.
-    protected virtual void OnEnterPressed(Button current)
-    {
-        current?.IsClicked?.Invoke(current);
-    }
-
+    
     public virtual void Update(GameTime gameTime)
     {
         UpdateLayout();
 
-        var ks = Keyboard.GetState();
-        if (Pressed(Keys.Up, ks)) Move(-1);
-        if (Pressed(Keys.Down, ks)) Move(+1);
-        if (Pressed(Keys.Enter, ks)) OnEnterPressed(entries.Count > 0 ? entries[selected].btn : null);
-
         for (int i = 0; i < entries.Count; i++)
             entries[i].btn.Update(gameTime);
 
-        prev = ks;
+        var ms = Mouse.GetState();
+        selected = -1;
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (entries[i].btn.Bounds.Contains(ms.Position))
+            {
+                selected = i;
+                break;
+            }
+        }
+
+        if (selected >= entries.Count) selected = -1;
     }
 
     public virtual void Draw(SpriteBatch sb)
@@ -97,7 +97,7 @@ public abstract class Menu : IUpdateable, IDrawable
         for (int i = 0; i < entries.Count; i++)
             entries[i].btn.Draw(sb);
 
-        if (entries.Count > 0)
+        if (selected >= 0 && selected < entries.Count)
             DrawSelector(sb, entries[selected].btn);
     }
 
@@ -153,7 +153,8 @@ public abstract class Menu : IUpdateable, IDrawable
             target.Bounds.Center.Y - selSize.Y / 2f
         );
 
-        sb.Draw(selectorSheet.texture, selPos, src, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0.11f);
+        sb.Draw(selectorSheet.texture, selPos, src, Color.White, 0f, Vector2.Zero, 
+            scale, SpriteEffects.None, 0.11f);
     }
 
     private void DrawTitle(SpriteBatch sb)
@@ -167,11 +168,7 @@ public abstract class Menu : IUpdateable, IDrawable
         sb.DrawString(Font, Title, center, TitleColor,
             0f, size * 0.5f, TitleScale, SpriteEffects.None, 0.1001f);
     }
-
-    private void Move(int delta) => selected = (selected + delta + entries.Count) % entries.Count;
-    private bool Pressed(Keys k, KeyboardState ks) => ks.IsKeyDown(k) && !prev.IsKeyDown(k);
-
-    private static Rectangle CenteredRect(Point size, Vector2 center) =>
+    protected static Rectangle CenteredRect(Point size, Vector2 center) =>
         new((int)(center.X - size.X / 2f), (int)(center.Y - size.Y / 2f), size.X, size.Y);
 
     /// Derived classes must add their buttons here via CreateButton + AddButton
