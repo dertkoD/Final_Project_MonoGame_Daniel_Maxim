@@ -355,7 +355,7 @@ public class Player : Animation
 
         HP = Math.Max(0, HP - amount);
 
-        if (HP > 0)
+        if (HP >  0 && _state != PlayerState.Defend)
         {
             _state = PlayerState.Hurt;
             ChangeAnimation(TakingDamageAnim);

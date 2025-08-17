@@ -64,6 +64,7 @@ public class Game1 : Game
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
         SpriteManager.AddSprite("TakingDamage", "Sprites/Player/TakingDamage", columns: 3, rows: 1);
         SpriteManager.AddSprite("Death", "Sprites/Player/DeathAnim", columns: 10, rows: 1);
+        SpriteManager.AddSprite("ShieldBlock", "Sprites/Player/BlockShield", columns: 4, rows: 1);
         
         // hp ui
         SpriteManager.AddSprite("HP", "Sprites/Player/HP");
