@@ -10,46 +10,47 @@ public class Button : UIElement
 {
     public Rectangle Bounds;
 
-    // Спрайт фона (из SpriteManager)
+    // background sprite
     private SpriteSheetInfo spriteSheet;
     private int frameIndex = 0;
 
-    // Масштаб для "старого" режима (когда не тянем под Bounds)
+    // scale for "old mode" (without bounds)
     private float textureScale = 1f;
 
-    // Режимы отрисовки
+    // draw mode flags
     private bool useSprite = true;
-    private bool stretchToBounds = true; // ВАЖНО: по умолчанию растягиваем под Bounds
+    private bool stretchToBounds = true; // stretching to bounds work as default
 
-    // Фолбек-заливка
+    // fallback fill
     private Texture2D fallbackPixel;
     private Color fillColor = Color.Transparent;
 
-    // Визуал
+    // visual tints
     private Color baseTint = Color.White;
     private Color hoverTint = Color.White;
     private bool isHovering;
     
-    // Текст
+    // text overlay
     private SpriteFont font;
     private string text = "";
     private Color textColor = Color.White;
     private float textScale = 1f;
 
-    // Слои
+    // layering
     private float layerDepth = 0.5f;
 
     private MouseState prevMouse;
     
-    // Клик
+    // click callback
     public Action<Button> IsClicked;
-
     
     public Button(GraphicsDevice gd)
     {
+        // 1x1 white texture for fallback fill mode
         fallbackPixel = new Texture2D(gd, 1, 1);
         fallbackPixel.SetData(new[] { Color.White });
 
+        // default button size near screen center
         Bounds = new Rectangle(
             (int)(Game1.ScreenCenter.X - 200),
             (int)(Game1.ScreenCenter.Y - 40),
@@ -58,10 +59,8 @@ public class Button : UIElement
 
         prevMouse = Mouse.GetState();
     }
-
-    // ---------- ПУБЛИЧНОЕ API ----------
-
-    /// <summary>Задать фон из SpriteManager. stretch=true — тянуть спрайт под всю кнопку.</summary>
+    
+    // use a sprite as the button background, set stretch=true to fill bounds
     public void SetSprite(string spriteName, int frame = 0, float scale = 1f, bool stretch = true)
     {
         spriteSheet = SpriteManager.GetSprite(spriteName);
@@ -71,19 +70,21 @@ public class Button : UIElement
         stretchToBounds = stretch;
     }
 
-    /// <summary>Цветовая заливка вместо спрайта.</summary>
+    // solid color fill
     public void SetFillColor(Color color)
     {
         fillColor = color;
         useSprite = false;
     }
 
+    // draw a solid color instead of sprite
     public void SetTint(Color normal, Color hover)
     {
         baseTint = normal;
         hoverTint = hover;
     }
 
+    // set button label, color and scale
     public void SetText(SpriteFont font, string content, Color color, float scale = 1f)
     {
         this.font = font;
@@ -92,10 +93,12 @@ public class Button : UIElement
         textScale = scale;
     }
 
+    // set draw order
     public void SetLayerDepth(float depth) => layerDepth = MathHelper.Clamp(depth, 0f, 1f); 
+    // assign the Bounds rect
     public void SetBounds(Rectangle rect) => Bounds = rect;
     
-    /// <summary>Установить размер по центру в точке.</summary>
+    // place button so that its center equals the given point
     public void SetCenteredBounds(Point size, Vector2 center)
     {
         Bounds = new Rectangle(
@@ -104,14 +107,16 @@ public class Button : UIElement
             size.X, size.Y);
     }
 
-    // ---------- ЛОГИКА ----------
-
+    // logic
+    
+    // update hover state and detect click
     protected override void OnUpdate(GameTime gameTime)
     {
         var ms = Mouse.GetState();
         
         isHovering = Bounds.Contains(ms.Position);
 
+        // edge-triggered press inside Bounds
         bool releasedInside = isHovering 
                        && ms.LeftButton == ButtonState.Pressed
                        && prevMouse.LeftButton == ButtonState.Released;
@@ -122,19 +127,22 @@ public class Button : UIElement
         prevMouse = ms;
     }
 
+    // draw background and then centered text
     protected override void OnDraw(SpriteBatch spriteBatch)
     {
         Color tint = isHovering ? hoverTint : baseTint;
 
-        // 1) Фон
+        // 1) background
         if (!useSprite)
         {
+            // solid color fill
             if (fillColor.A > 0)
                 spriteBatch.Draw(fallbackPixel, Bounds, null, fillColor, 0f, 
                     Vector2.Zero, SpriteEffects.None, layerDepth);
         }
         else if (spriteSheet?.texture != null && Bounds.Width > 0 && Bounds.Height > 0)
         {
+            // calculate source rect for the chosen frame
             int fw = spriteSheet.texture.Width / Math.Max(1, spriteSheet.columns);
             int fh = spriteSheet.texture.Height / Math.Max(1, spriteSheet.rows);
             int total = Math.Max(1, spriteSheet.columns * spriteSheet.rows);
@@ -147,7 +155,7 @@ public class Button : UIElement
 
             if (stretchToBounds)
             {
-                // Тянем ровно под Bounds (и по ширине, и по высоте)
+                // stretch exactly to Bounds
                 spriteBatch.Draw(
                     texture: spriteSheet.texture,
                     destinationRectangle: Bounds,
@@ -161,11 +169,9 @@ public class Button : UIElement
             }
             else
             {
-                // Старый режим: рисуем по scale по центру Bounds
+                // old mode: draw at textureScale, centered in Bounds (no stretching)
                 Vector2 center = new(Bounds.X + Bounds.Width / 2f, Bounds.Y + Bounds.Height / 2f);
                 Vector2 origin = new(src.Width / 2f, src.Height / 2f);
-                // Снэп к пиксельной сетке
-                //pos = new Vector2((int)Math.Round(pos.X), (int)Math.Round(pos.Y));
 
                 spriteBatch.Draw(
                     texture: spriteSheet.texture,
@@ -181,14 +187,14 @@ public class Button : UIElement
             }
         }
 
-        // 2) Текст по центру
+        // 2) centered text overlay (optional)
         if (font != null && !string.IsNullOrEmpty(text))
         {
             Vector2 tsize = font.MeasureString(text) * textScale;
             Vector2 center = new(Bounds.X + Bounds.Width / 2f, Bounds.Y + Bounds.Height / 2f);
-            center = new((int)Math.Round(center.X), (int)Math.Round(center.Y));
+            center = new((int)Math.Round(center.X), (int)Math.Round(center.Y)); // snap to pixels
 
-            // Лёгкая тень + основной
+            // small drop shadow + text
             spriteBatch.DrawString(font, text, center + new Vector2(1, 1), Color.Black * 0.6f,
                 0f, tsize * 0.5f, textScale, SpriteEffects.None, layerDepth + 0.00005f);
             spriteBatch.DrawString(font, text, center, textColor,

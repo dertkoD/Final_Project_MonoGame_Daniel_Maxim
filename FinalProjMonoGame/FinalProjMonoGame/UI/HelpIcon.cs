@@ -25,7 +25,7 @@ public class HelpIcon : UIElement
             _texture = SpriteManager.GetSprite(_spriteName).texture;
 
         var mouse = Mouse.GetState();
-        _popup.Visible = Bounds.Contains(mouse.Position);
+        _popup.Visible = Bounds.Contains(mouse.Position); // checks the visibility of the popup 
     }
 
     protected override void OnDraw(SpriteBatch sb)
