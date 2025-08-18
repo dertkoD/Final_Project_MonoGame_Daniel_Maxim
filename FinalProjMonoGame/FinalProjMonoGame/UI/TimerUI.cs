@@ -32,7 +32,8 @@ public class TimerUI : UIElement
     {
         string text = FormatTime(_elapsed);
         Vector2 sizeUnscaled = _font.MeasureString(text);
-        Vector2 origin = AlignCenter ? sizeUnscaled * 0.5f : Vector2.Zero;
+        // decides whether to align center or left
+        Vector2 origin = AlignCenter ? sizeUnscaled * 0.5f : Vector2.Zero; 
 
         spriteBatch.DrawString(
             _font,

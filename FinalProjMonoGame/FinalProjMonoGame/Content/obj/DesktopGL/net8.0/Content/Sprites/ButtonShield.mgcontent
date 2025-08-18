@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/ButtonShield.png</SourceFile>
-  <SourceTime>2025-08-13T15:28:08.7817859+03:00</SourceTime>
-  <DestFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Content/Sprites/ButtonShield.xnb</DestFile>
-  <DestTime>2025-08-18T20:16:16.7150648+03:00</DestTime>
+  <SourceFile>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/ButtonShield.png</SourceFile>
+  <SourceTime>2025-08-13T16:30:19.3390001+03:00</SourceTime>
+  <DestFile>C:/Tiltan/OOP/OOP Monogame Final/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Content/Sprites/ButtonShield.xnb</DestFile>
+  <DestTime>2025-08-18T21:15:29.1794709+03:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T13:31:02+03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
