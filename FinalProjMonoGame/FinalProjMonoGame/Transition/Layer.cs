@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace FinalProjMonoGame;
+namespace FinalProjMonoGame.Transition;
 
 public class Layer
 {

@@ -18,7 +18,7 @@ public class HelpPopup : UIElement
     public float TextScale { get; set; } = 1.1f;
     public float LineSpacingMul { get; set; } = 1.15f;
     public Color TextColor { get; set; } = Color.White;
-    public Color FallbackPanelColor { get; set; } = new Color(0, 0, 0, 170);
+    public Color FallbackPanelColor { get; set; } = new Color(0, 0, 0, 170); // background coloring
 
     private readonly SpriteFont _font;
     private readonly string _windowSpriteName;
@@ -30,23 +30,27 @@ public class HelpPopup : UIElement
         _windowSpriteName = windowSpriteName;
     }
 
+    // nothing to update, popup is static
     protected override void OnUpdate(GameTime gameTime) {}
 
     protected override void OnDraw(SpriteBatch sb)
     {
+        // making sure we have a pixel texture
         EnsurePixel(sb.GraphicsDevice);
         sb.Draw(_pixel, Bounds, FallbackPanelColor);
 
+        // calculating the inner text area
         var area = new Rectangle(
             Bounds.X + Padding,
             Bounds.Y + Padding,
             Math.Max(1, Bounds.Width  - Padding * 2),
             Math.Max(1, Bounds.Height - Padding * 2)
         );
-
+        
         DrawWrappedString(sb, _font, Text ?? string.Empty, area, TextColor, TextScale, LineSpacingMul);
     }
 
+    // creates a 1x1 pixel texture for filling rects
     private void EnsurePixel(GraphicsDevice gd)
     {
         if (_pixel != null) return;
@@ -54,8 +58,9 @@ public class HelpPopup : UIElement
         _pixel.SetData(new[] { Color.White });
     }
 
-    // ------- Measuring & drawing (share tokenization) -------
+    // measuring & drawing
 
+    // breaks the text into instances (tokens) while preserving spaces for future popup window regulation
     private static List<string> TokenizePreservingSpaces(string text)
     {
         var tokens = new List<string>();
@@ -65,9 +70,13 @@ public class HelpPopup : UIElement
         {
             char c = text[i];
 
+            // ignore carriage return
             if (c == '\r') { i++; continue; }
+            
+            // treat newline as its own token
             if (c == '\n') { tokens.Add("\n"); i++; continue; }
 
+            // consecutive spaces as one token
             if (c == ' ')
             {
                 int j = i;
@@ -77,6 +86,7 @@ public class HelpPopup : UIElement
                 continue;
             }
 
+            // otherwise accumulate characters until next space or newline
             int k = i;
             while (k < text.Length && text[k] != ' ' && text[k] != '\n' && text[k] != '\r') k++;
             tokens.Add(text.Substring(i, k - i));
@@ -85,6 +95,7 @@ public class HelpPopup : UIElement
         return tokens;
     }
 
+    // simulating wrapping logic without drawing to count how tall the popup must be to fit all the text
     public int MeasureRequiredHeight(int width)
     {
         int innerW = Math.Max(1, width - Padding * 2);
@@ -100,6 +111,7 @@ public class HelpPopup : UIElement
         {
             if (t == "\n")
             {
+                // explicit line break
                 x = 0;
                 lines++;
                 continue;
@@ -123,6 +135,7 @@ public class HelpPopup : UIElement
         return (int)Math.Ceiling(total);
     }
 
+    // draws the text, wrapping words by available rect width
     private static void DrawWrappedString(SpriteBatch sb, SpriteFont font, string text,
         Rectangle area, Color color, float scale, float lineMul)
     {
@@ -136,6 +149,7 @@ public class HelpPopup : UIElement
         {
             if (t == "\n")
             {
+                // force new line
                 x = area.X;
                 y += lineH;
                 if (y + lineH > area.Bottom) break;
@@ -145,6 +159,7 @@ public class HelpPopup : UIElement
             bool isSpaces = t.Length > 0 && t[0] == ' ';
             float w = isSpaces ? spaceW * t.Length : font.MeasureString(t).X * scale;
 
+            // wrap if text goes beyond the right edge
             if (x + w > area.Right)
             {
                 x = area.X;
@@ -153,6 +168,7 @@ public class HelpPopup : UIElement
                 if (isSpaces) continue; // drop leading spaces on new line
             }
 
+            // draws the token if it's not just spaces
             if (!isSpaces)
                 sb.DrawString(font, (string)t, new Vector2((int)x, (int)y), color, 0f, Vector2.Zero, 
                     scale, SpriteEffects.None, 0.13f);

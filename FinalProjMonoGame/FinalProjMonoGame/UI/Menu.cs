@@ -6,24 +6,26 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FinalProjMonoGame.UI;
 
+// base class for menus
+// common widow, title, button handling and selection logic
 public abstract class Menu : IUpdateable, IDrawable
 {
     protected readonly GraphicsDevice Gd;
     protected readonly SpriteFont Font;
 
-    /// Used by animated transitions (e.g. slide the whole menu vertically)
+    /// used by animated transitions
     public float SlideOffsetY { get; set; } = 0f;
 
-    // Sprite names (override if needed)
+    // sprite names
     protected virtual string WindowSpriteName => "Window";
     protected virtual string ButtonSpriteName => "Button";
     protected virtual string SelectorSpriteName => "Selector";
 
-    // Layout defaults
+    // layout defaults
     protected virtual Point WindowSize => new Point(1800, 800);
     protected virtual Point ButtonSize => new Point(WindowSize.X - 1000, 240);
 
-    // Optional title
+    // optional title
     protected virtual string Title => null;
     protected virtual Vector2 TitleOffset => new Vector2(125f, -125f);
     protected virtual float TitleScale => 2.2f;
@@ -31,10 +33,13 @@ public abstract class Menu : IUpdateable, IDrawable
 
     protected readonly List<(Button btn, Vector2 baseCenterOffset)> entries = new();
     
+    // hovered/selected button index
     protected int selected = -1;
+    
     
     private SpriteSheetInfo windowSheet;
     private SpriteSheetInfo selectorSheet;
+    
     private Rectangle windowRectBase; // centered around ScreenCenter
     protected Rectangle windowRectDraw; // actually drawn (with SlideOffsetY applied)
 
@@ -52,7 +57,7 @@ public abstract class Menu : IUpdateable, IDrawable
         UpdateLayout();
     }
 
-    /// Create a ready-to-use button with our menu visuals
+    // create a ready-to-use button with text and click handling
     protected Button CreateButton(string text, Action<Button> onClick)
     {
         var b = new Button(Gd);
@@ -62,7 +67,7 @@ public abstract class Menu : IUpdateable, IDrawable
         return b;
     }
 
-    /// Add a button and tell where it should be (relative to screen center)
+    // add a button and tell where it should be (relative to screen center)
     protected void AddButton(Button b, Vector2 baseCenterOffset)
     {
         entries.Add((b, baseCenterOffset));
@@ -72,9 +77,11 @@ public abstract class Menu : IUpdateable, IDrawable
     {
         UpdateLayout();
 
+        // button updates
         for (int i = 0; i < entries.Count; i++)
             entries[i].btn.Update(gameTime);
 
+        // mouse position tracking
         var ms = Mouse.GetState();
         selected = -1;
         for (int i = 0; i < entries.Count; i++)
@@ -101,13 +108,14 @@ public abstract class Menu : IUpdateable, IDrawable
             DrawSelector(sb, entries[selected].btn);
     }
 
-    // ---------- layout & drawing helpers ----------
+    // layout & drawing helpers
 
     private void UpdateLayout()
     {
         windowRectDraw = windowRectBase;
         windowRectDraw.Offset(0, (int)SlideOffsetY);
 
+        // position each button centered at its offset
         for (int i = 0; i < entries.Count; i++)
         {
             var center = Game1.ScreenCenter + entries[i].baseCenterOffset + new Vector2(0, SlideOffsetY);
@@ -115,6 +123,7 @@ public abstract class Menu : IUpdateable, IDrawable
         }
     }
 
+    // draws the background window rect with window sprite
     private void DrawWindow(SpriteBatch sb)
     {
         if (windowSheet?.texture == null) return;
@@ -135,6 +144,7 @@ public abstract class Menu : IUpdateable, IDrawable
         );
     }
 
+    // draws a selector arrow to the currently hovered button
     private void DrawSelector(SpriteBatch sb, Button target)
     {
         if (selectorSheet?.texture == null || target == null) return;
@@ -143,6 +153,7 @@ public abstract class Menu : IUpdateable, IDrawable
         int sh = selectorSheet.texture.Height / Math.Max(1, selectorSheet.rows);
         var src = new Rectangle(0, 0, sw, sh);
 
+        // scale selector to 60% of button height
         float targetH = Math.Max(1f, target.Bounds.Height * 0.6f);
         float scale = targetH / sh;
 
@@ -157,6 +168,7 @@ public abstract class Menu : IUpdateable, IDrawable
             scale, SpriteEffects.None, 0.11f);
     }
 
+    // draws the optional menu title at the top of the menu window
     private void DrawTitle(SpriteBatch sb)
     {
         Vector2 size = Font.MeasureString(Title) * TitleScale;
@@ -168,9 +180,10 @@ public abstract class Menu : IUpdateable, IDrawable
         sb.DrawString(Font, Title, center, TitleColor,
             0f, size * 0.5f, TitleScale, SpriteEffects.None, 0.1001f);
     }
+    // utility to build a rectangle centered at a point
     protected static Rectangle CenteredRect(Point size, Vector2 center) =>
         new((int)(center.X - size.X / 2f), (int)(center.Y - size.Y / 2f), size.X, size.Y);
 
-    /// Derived classes must add their buttons here via CreateButton + AddButton
+    // derived classes must add their buttons here via CreateButton + AddButton
     protected abstract void BuildContent();
 }
