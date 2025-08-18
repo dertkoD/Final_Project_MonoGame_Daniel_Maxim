@@ -111,14 +111,14 @@ public class Game1 : Game
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
         SceneManager.Add(menu);
 
-        // Контроллер анимации перехода меню -> игра
         var transition = new MenuTransition(
             parallax,
             groundTrans,
             setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
-            startGame: StartGame
-        );
+            onComplete: StartGame);
         SceneManager.Add(transition);
+
+        menu.OnStart = () => transition.Begin();
 
         // 5) По нажатию Start запускаем плавный переход
         menu.OnStart = () => transition.Begin();
@@ -207,42 +207,56 @@ public class Game1 : Game
 
     public void TriggerGameOver(Player player, double delaySeconds)
     {
-        var delay = new EndGameDelay(
-            delaySeconds,
-            GraphicsDevice,
-            _quivertFont,
-            player,
-            onRestart: StartGame,
-            onMainMenu: () =>
-            {
-                SceneManager.SwitchTo(() =>
+        // Заблокировать управление уже делается в Player при смерти.
+        // Ждём delaySeconds и показываем оверлей-меню.
+        SceneManager.Add(new OneShotTimer((float)delaySeconds, () =>
+        {
+            var endMenu = new EndGameScreen(
+                GraphicsDevice, _quivertFont,
+                onRestart: StartGame,
+                onMainMenu: () =>
                 {
-                    var parallax = ParallaxBackground.ForestForMenu();
-                    SceneManager.Add(parallax);
+                    // Полный возврат в главное меню (со «стартовой» анимацией)
+                    SceneManager.SwitchTo(() =>
+                    {
+                        var parallax = ParallaxBackground.ForestForMenu();
+                        SceneManager.Add(parallax);
 
-                    var groundTrans = new GroundLayer("GroundGrass", "Earth",
-                        groundY: (int)(ScreenSize.Y * 0.79f),
-                        tileScale: 6,
-                        scrollSpeed: 0f,
-                        overlapPx: 15);
-                    groundTrans.SetYOffset(ScreenSize.Y);
-                    SceneManager.Add(groundTrans);
+                        var groundTrans = new GroundLayer(
+                            "GroundGrass", "Earth",
+                            groundY: (int)(ScreenSize.Y * 0.79f),
+                            tileScale: 6,
+                            scrollSpeed: 0f,
+                            overlapPx: 15);
+                        groundTrans.SetYOffset(ScreenSize.Y);
+                        SceneManager.Add(groundTrans);
 
-                    var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
-                    SceneManager.Add(menu);
+                        var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
+                        SceneManager.Add(menu);
 
-                    var transition = new MenuTransition(
-                        parallax,
-                        groundTrans,
-                        setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
-                        startGame: StartGame
-                    );
-                    SceneManager.Add(transition);
+                        var transition = new MenuTransition(
+                            parallax,
+                            groundTrans,
+                            setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
+                            onComplete: StartGame);
+                        SceneManager.Add(transition);
 
-                    menu.OnStart = () => transition.Begin();
+                        menu.OnStart = () => transition.Begin();
+                    });
+
+                    AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
                 });
-                AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
-            });
-        SceneManager.Add(delay);
+
+            SceneManager.Add(endMenu);
+
+            // Въезд оверлея как у главного меню, но только меню (фон/землю не трогаем)
+            var overlayTrans = new MenuTransition(
+                parallax: null,
+                ground: null,
+                setMenuSlideOffsetY: y => endMenu.SlideOffsetY = y,
+                onComplete: null);
+            SceneManager.Add(overlayTrans);
+            overlayTrans.Begin(MenuTransition.Config.MenuEnter(fromTop: true, duration: 0.6f));
+        }));
     }
 }
