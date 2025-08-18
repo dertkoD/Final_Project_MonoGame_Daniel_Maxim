@@ -11,7 +11,7 @@ public class MainMenu : Menu
     private HelpIcon _icon;
     private HelpPopup _popup;
 
-    // База (неподвижные) координаты иконки — от них считаем сдвиг по SlideOffsetY
+    // fixed position of the help icon
     private Rectangle _iconBaseBounds;
 
     public MainMenu(GraphicsDevice gd, SpriteFont font, Action onStart)
@@ -19,25 +19,27 @@ public class MainMenu : Menu
     {
         OnStart = onStart;
     }
-
-    // Без заголовка (как и раньше)
+    
+    // no title for the main menu
     protected override string Title => null;
 
     protected override void BuildContent()
     {
-        // Кнопки
+        // buttons
         var start = CreateButton("Start", _ => OnStart?.Invoke());
         var exit = CreateButton("Exit", _ => Environment.Exit(0));
 
+        // button positioning
         AddButton(start, new Vector2(0, -100));
         AddButton(exit, new Vector2(0, 100));
 
-        // Попап помощи
+        // help popup, hidden at start
         _popup = new HelpPopup(Font)
         {
             Visible = false
         };
 
+        // text setup
         _popup.Text =
             "Controls:                                                            In-game pause:\n" +
                 "A / Left Arrow Key         Face Left                    P             Toggle Pause\n" +
@@ -49,11 +51,14 @@ public class MainMenu : Menu
                 "Goal:\n" +
                 "Survive. Time your defenses and attacks while facing the correct direction.\n" +
                 "Bomb deals 2 damage, arrow deals 1 damage.\n" +
+                "Attacking protects you from bombs and arrows, but the timing is harder than defending.\n" + 
+                "Defending protects you from arrows, but bombs still deal 1 damage.\n" + 
             "Deflecting 5 projectiles grants 1 HP.\n" +
             "Good Luck! :)";
 
-        // Иконка помощи: сохраняем базовые координаты и задаём Bounds
+        // defining help icon's base bounds
         _iconBaseBounds = new Rectangle(1380, 470, 120, 120);
+        // create the icon and give it its rect
         _icon = new HelpIcon(_popup)
         {
             Bounds = _iconBaseBounds
@@ -64,10 +69,11 @@ public class MainMenu : Menu
     {
         base.Update(gameTime);
 
-        // Адаптивный размер попапа и его позиция с учётом SlideOffsetY
+        // adaptive popup size 
         int pw = (int)(Game1.ScreenBounds.Width * 0.75f);
         int maxH = (int)(Game1.ScreenBounds.Height * 0.7f);
 
+        // scaling down the text until it fits in the maxH
         float scale = _popup.TextScale;
         const float minScale = 0.80f;
         int ph;
@@ -82,13 +88,14 @@ public class MainMenu : Menu
 
         ph = Math.Min(ph, maxH);
 
+        // center position of the popup
         _popup.Bounds = new Rectangle(
             (int)(Game1.ScreenCenter.X - pw / 2f),
             (int)(Game1.ScreenCenter.Y - ph / 2f + SlideOffsetY),
             pw, ph
         );
 
-        // >>> Фикс: двигать иконку вместе с меню <<<
+        // move help icon together with menu sliding
         _icon.Bounds = new Rectangle(
             _iconBaseBounds.X,
             _iconBaseBounds.Y + (int)SlideOffsetY,

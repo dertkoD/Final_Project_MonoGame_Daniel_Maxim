@@ -6,6 +6,7 @@ namespace FinalProjMonoGame.UI;
 
 public class EndGameScreen : Menu
 {
+    // button events
     private readonly Action onRestart;
     private readonly Action onMainMenu;
 
@@ -16,10 +17,11 @@ public class EndGameScreen : Menu
         this.onMainMenu = onMainMenu;
     }
 
-    protected override string Title => "You Lose";
+    protected override string Title => "You Lose"; // game over title
 
     protected override void BuildContent()
     {
+        // creating the buttons and adjusting their positions;
         var restart = CreateButton("Restart",   _ => onRestart?.Invoke());
         var menu    = CreateButton("Main Menu", _ => onMainMenu?.Invoke());
 

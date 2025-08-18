@@ -6,7 +6,6 @@ namespace FinalProjMonoGame.UI;
 public class HpUI : UIElement
 {
     private readonly Player _player;
-
     private readonly string _heartSpriteName;
     private Texture2D _heartTexture;
 
@@ -26,6 +25,7 @@ public class HpUI : UIElement
         _heartTexture = SpriteManager.GetSprite(_heartSpriteName).texture;
     }
 
+    // no per frame logic, everything depends on player's current HP
     protected override void OnUpdate(GameTime gameTime) {}
 
     protected override void OnDraw(SpriteBatch spriteBatch)
@@ -33,15 +33,16 @@ public class HpUI : UIElement
         if (_heartTexture == null)
             _heartTexture = SpriteManager.GetSprite(_heartSpriteName).texture;
 
-        int max = _player.MaxHP;
         int cur = _player.HP;
         
         if (cur <= 0 || _heartTexture == null)
             return;
-
+        
+        // calculating HP size
         int heartW = (int)(_heartTexture.Width * Scale);
         int heartH = (int)(_heartTexture.Height * Scale);
         
+        // drawing one heart per current HP
         for (int i = 0; i < cur; i++)
         {
             var dest = new Rectangle(
