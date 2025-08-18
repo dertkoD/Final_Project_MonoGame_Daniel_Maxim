@@ -78,7 +78,6 @@ public class Player : Animation
         };
         Health.OnHealed += hp =>
         {
-            /* hook UI if needed */
         };
         Health.OnDied += () =>
         {
