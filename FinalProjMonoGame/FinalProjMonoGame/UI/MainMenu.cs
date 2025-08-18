@@ -33,9 +33,9 @@ public class MainMenu : Menu
         };
         
         _popup.Text = 
-            "Controls:\n" +
-            "A / Left Arrow Key         Face Left\n" +
-            "D / Right Arrow Key       Face Right\n" +
+            "Controls:                                                            In-game pause:\n" +
+            "A / Left Arrow Key         Face Left                    P             Toggle Pause\n" +
+            "D / Right Arrow Key       Face Right                  Esc          Main Menu (during pause)\n" +
             "Hold Shift                        Defend\n" +
             "E                                      Attack\n" +
             "M                                     Toggle Music\n" +
