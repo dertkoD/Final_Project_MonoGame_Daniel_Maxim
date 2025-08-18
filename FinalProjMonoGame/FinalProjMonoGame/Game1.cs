@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FinalProjMonoGame.PlayerClasses;
 
 namespace FinalProjMonoGame;
 
@@ -178,7 +179,7 @@ public class Game1 : Game
                 overlapPx: 15);
             SceneManager.Add(ground);
             
-            var player =SceneManager.Create<Player>();
+            var player = SceneManager.Create<Player>();
             
             // Расположение двух spawn-точек СРАЗУ за краями экрана
             var leftSpawn  = new Vector2(-120f, ScreenCenter.Y);

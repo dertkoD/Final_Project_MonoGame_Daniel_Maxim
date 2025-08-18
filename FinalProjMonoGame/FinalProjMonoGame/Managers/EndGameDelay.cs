@@ -1,4 +1,5 @@
-﻿using FinalProjMonoGame.UI;
+﻿using FinalProjMonoGame.PlayerClasses;
+using FinalProjMonoGame.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
