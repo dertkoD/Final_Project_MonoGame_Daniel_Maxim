@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/Bomb.png</SourceFile>
-  <SourceTime>2025-08-15T21:31:04.1878927+03:00</SourceTime>
-  <DestFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Sprites/Enemy/Bomb.xnb</DestFile>
-  <DestTime>2025-08-17T14:56:25.4759936+03:00</DestTime>
+  <SourceFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/BlockShield.png</SourceFile>
+  <SourceTime>2025-08-17T14:46:05.1020328+03:00</SourceTime>
+  <DestFile>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/bin/DesktopGL/Sprites/Player/BlockShield.xnb</DestFile>
+  <DestTime>2025-08-17T14:56:25.7017683+03:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T13:31:02+03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

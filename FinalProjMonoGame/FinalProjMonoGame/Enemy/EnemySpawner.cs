@@ -6,6 +6,10 @@ namespace FinalProjMonoGame;
 
 public class EnemySpawner : IDrawable, IUpdateable
 {
+    public bool IsPaused { get; private set; } = false;
+    public void Pause()  => IsPaused = true;
+    public void Resume() => IsPaused = false;
+    
     private readonly Random _rng = new Random();
     private Vector2[] _points = Array.Empty<Vector2>();
     private Player _player;
@@ -48,6 +52,11 @@ public class EnemySpawner : IDrawable, IUpdateable
     public void Update(GameTime gameTime)
     {
         if (_player == null || _points.Length == 0) return;
+
+        // Авто-стоп спавна, если игрок умер / отключено управление,
+        // а также внешняя ручная пауза.
+        if (IsPaused || _player.HP <= 0 || !_player.ControlIsEnabled)
+            return;
 
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _timer -= dt;

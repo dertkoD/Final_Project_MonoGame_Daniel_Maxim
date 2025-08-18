@@ -22,6 +22,7 @@
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Enemy/BombExplosion.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/MainMenuBackground.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/pixel.png</File>
+    <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/BlockShield.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/DeathAnim.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/PlayerDefend.png</File>
     <File>D:/programs/CSharpAdvanced/MonoGame/FinalProj/Final_Project_MonoGame_Daniel_Maxim/FinalProjMonoGame/FinalProjMonoGame/Content/Sprites/Player/PlayerHit.png</File>
@@ -46,6 +47,7 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Sprites/Enemy/BombExplosion</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

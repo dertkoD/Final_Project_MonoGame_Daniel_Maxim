@@ -107,21 +107,9 @@ D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxi
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\GroundGrass.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\DeathAnim.xnb
 D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\TakingDamage.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\Earth.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\GroundGrass.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\VINES - Second.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - First.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Fourth.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Second.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Backgrounds\WOODS - Third.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Arrow.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\Bomb.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Enemy\BombExplosion.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\pixel.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\DeathAnim.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\TakingDamage.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDeath.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHurt.xnb
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDeath.ogg
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHurt.ogg
-C:\Tiltan\OOP\OOP Monogame Final\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\HelpIcon.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\Player\BlockShield.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDeath.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHurt.ogg
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerDeath.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Audio\SFX\PlayerHurt.xnb
+D:\programs\CSharpAdvanced\MonoGame\FinalProj\Final_Project_MonoGame_Daniel_Maxim\FinalProjMonoGame\FinalProjMonoGame\bin\Debug\net8.0\Content\Sprites\HelpIcon.xnb

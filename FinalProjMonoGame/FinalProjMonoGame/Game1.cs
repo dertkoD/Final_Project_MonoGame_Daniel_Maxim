@@ -21,9 +21,6 @@ public class Game1 : Game
 
     private KeyboardState _prevKeys;
 
-    private bool _inGameplay = false;
-    private bool _isPaused = false;
-
     public Game1()
     {
         Instance = this;
@@ -68,6 +65,7 @@ public class Game1 : Game
         SpriteManager.AddSprite("PlayerDefend", "Sprites/Player/PlayerDefend", columns: 8, rows: 1);
         SpriteManager.AddSprite("TakingDamage", "Sprites/Player/TakingDamage", columns: 3, rows: 1);
         SpriteManager.AddSprite("Death", "Sprites/Player/DeathAnim", columns: 10, rows: 1);
+        SpriteManager.AddSprite("ShieldBlock", "Sprites/Player/BlockShield", columns: 4, rows: 1);
         
         // hp ui
         SpriteManager.AddSprite("HP", "Sprites/Player/HP");
@@ -113,14 +111,14 @@ public class Game1 : Game
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
         SceneManager.Add(menu);
 
-        // Контроллер анимации перехода меню -> игра
         var transition = new MenuTransition(
             parallax,
             groundTrans,
             setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
-            startGame: StartGame
-        );
+            onComplete: StartGame);
         SceneManager.Add(transition);
+
+        menu.OnStart = () => transition.Begin();
 
         // 5) По нажатию Start запускаем плавный переход
         menu.OnStart = () => transition.Begin();
@@ -131,26 +129,21 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         var ks = Keyboard.GetState();
+        
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+            ks.IsKeyDown(Keys.Escape))
+            Exit();
 
         // toggle M for music, N for SFX
         bool Pressed(Keys k) => ks.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
-        if (Pressed(Keys.M)) AudioManager.ToggleMusic();
-        if (Pressed(Keys.N)) AudioManager.ToggleSfx();
+        if (Pressed(Keys.M))
+            AudioManager.ToggleMusic();
+        if (Pressed(Keys.N))
+            AudioManager.ToggleSfx();
 
-        if (_inGameplay && Pressed(Keys.P))
-            _isPaused = !_isPaused;
-
-        if (_inGameplay && _isPaused && Pressed(Keys.Escape))
-        {
-            GoToMainMenu();
-            _prevKeys = ks;
-            base.Update(gameTime);
-            return;
-        }
-        
-        if (!_isPaused) SceneManager.Instance.Update(gameTime);
-        
         _prevKeys = ks;
+        
+        SceneManager.Instance.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -167,9 +160,6 @@ public class Game1 : Game
     
     private void StartGame()
     {
-        _inGameplay = true;
-        _isPaused = false;
-        
         SceneManager.SwitchTo(() =>
         {
             SceneManager.Add(new ParallaxBackground(new (string,float,float)[] {
@@ -187,7 +177,7 @@ public class Game1 : Game
                 overlapPx: 15);
             SceneManager.Add(ground);
             
-            var player = SceneManager.Create<Player>();
+            var player =SceneManager.Create<Player>();
             
             // Расположение двух spawn-точек СРАЗУ за краями экрана
             var leftSpawn  = new Vector2(-120f, ScreenCenter.Y);
@@ -210,7 +200,6 @@ public class Game1 : Game
                 Scale = 1.5f,
                 AlignCenter = true,
             };
-            timer.Reset();
             SceneManager.Add(timer);
         });
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
@@ -218,79 +207,56 @@ public class Game1 : Game
 
     public void TriggerGameOver(Player player, double delaySeconds)
     {
-        var delay = new EndGameDelay(
-            delaySeconds,
-            GraphicsDevice,
-            _quivertFont,
-            player,
-            onRestart: StartGame,
-            onMainMenu: () =>
-            {
-                _inGameplay = false;
-                _isPaused = false;
-                
-                SceneManager.SwitchTo(() =>
+        // Заблокировать управление уже делается в Player при смерти.
+        // Ждём delaySeconds и показываем оверлей-меню.
+        SceneManager.Add(new OneShotTimer((float)delaySeconds, () =>
+        {
+            var endMenu = new EndGameScreen(
+                GraphicsDevice, _quivertFont,
+                onRestart: StartGame,
+                onMainMenu: () =>
                 {
-                    var parallax = ParallaxBackground.ForestForMenu();
-                    SceneManager.Add(parallax);
+                    // Полный возврат в главное меню (со «стартовой» анимацией)
+                    SceneManager.SwitchTo(() =>
+                    {
+                        var parallax = ParallaxBackground.ForestForMenu();
+                        SceneManager.Add(parallax);
 
-                    var groundTrans = new GroundLayer("GroundGrass", "Earth",
-                        groundY: (int)(ScreenSize.Y * 0.79f),
-                        tileScale: 6,
-                        scrollSpeed: 0f,
-                        overlapPx: 15);
-                    groundTrans.SetYOffset(ScreenSize.Y);
-                    SceneManager.Add(groundTrans);
+                        var groundTrans = new GroundLayer(
+                            "GroundGrass", "Earth",
+                            groundY: (int)(ScreenSize.Y * 0.79f),
+                            tileScale: 6,
+                            scrollSpeed: 0f,
+                            overlapPx: 15);
+                        groundTrans.SetYOffset(ScreenSize.Y);
+                        SceneManager.Add(groundTrans);
 
-                    var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
-                    SceneManager.Add(menu);
+                        var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
+                        SceneManager.Add(menu);
 
-                    var transition = new MenuTransition(
-                        parallax,
-                        groundTrans,
-                        setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
-                        startGame: StartGame
-                    );
-                    SceneManager.Add(transition);
+                        var transition = new MenuTransition(
+                            parallax,
+                            groundTrans,
+                            setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
+                            onComplete: StartGame);
+                        SceneManager.Add(transition);
 
-                    menu.OnStart = () => transition.Begin();
+                        menu.OnStart = () => transition.Begin();
+                    });
+
+                    AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
                 });
-                AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
-            });
-        SceneManager.Add(delay);
-    }
 
-    private void GoToMainMenu()
-    {
-        _inGameplay = false;
-        _isPaused = false;
-        
-        SceneManager.SwitchTo(() =>
-            {
-                var parallax = ParallaxBackground.ForestForMenu();
-                SceneManager.Add(parallax);
-                
-                var groundTrans = new GroundLayer("GroundGrass", "Earth",
-                    groundY: (int)(ScreenSize.Y * 0.79f),
-                    tileScale: 6,
-                    scrollSpeed: 0f,
-                    overlapPx: 15);
-                groundTrans.SetYOffset(ScreenSize.Y);
-                SceneManager.Add(groundTrans);
-                
-                var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
-                SceneManager.Add(menu);
-                
-                var transition = new MenuTransition(
-                    parallax,
-                    groundTrans,
-                    setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
-                    startGame: StartGame
-                );
-                SceneManager.Add(transition);
+            SceneManager.Add(endMenu);
 
-                menu.OnStart = () => transition.Begin();
-            });
-        AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
+            // Въезд оверлея как у главного меню, но только меню (фон/землю не трогаем)
+            var overlayTrans = new MenuTransition(
+                parallax: null,
+                ground: null,
+                setMenuSlideOffsetY: y => endMenu.SlideOffsetY = y,
+                onComplete: null);
+            SceneManager.Add(overlayTrans);
+            overlayTrans.Begin(MenuTransition.Config.MenuEnter(fromTop: true, duration: 0.6f));
+        }));
     }
 }

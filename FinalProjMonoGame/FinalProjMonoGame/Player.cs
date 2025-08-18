@@ -16,13 +16,17 @@ public class Player : Animation
     private const float HurtInvuln = 0.30f;
 
     // тюнинг размеров хитбокса тела
-    private float bodyWScale = 0.55f;
+    private float bodyWScale = 0.25f;
     private float bodyHScale = 0.70f;
     private int bodyYOffset = 6;
+    private int bodyXOffset = 6;
+    
+    private const float AttackMinCooldown = 0.85f;
+    private float _attackCooldownTimer = 0f;
 
-    // окно активности удара (если понадобится для таймингов хитбокса)
-    private float attackActiveTime = 0.18f;
-
+    private float _shieldBlockFxTime = 0.25f;   // длительность «удар-спарк» анимации щитом
+    private float _shieldBlockTimer  = 0f; 
+    
     public int MaxHP { get; private set; } = 5;
     public int HP { get; private set; }
 
@@ -36,6 +40,7 @@ public class Player : Animation
     private const string DefendAnim = "PlayerDefend";
     private const string TakingDamageAnim = "TakingDamage";
     private const string DeathAnim = "Death";
+    private const string ShieldBlockAnim = "ShieldBlock";
 
     private bool _facingRight = true;
 
@@ -128,7 +133,10 @@ public class Player : Animation
 
     private void OnShieldTrigger(object o)
     {
-        if (_state != PlayerState.Defend) return;
+        if (_state != PlayerState.Defend)
+        {
+            return;
+        }
 
         if (o is Bomb bomb)
         {
@@ -164,6 +172,8 @@ public class Player : Animation
 
             RegisterDeflect();
             AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
+            
+            TriggerShieldBlockFx();
         }
     }
 
@@ -183,13 +193,6 @@ public class Player : Animation
                 ResetDeflectStreak();
                 arrow.Destroy();
                 break;
-
-            case Enemy enemy:
-                // общий случай на всякий: контактный урон
-                Damage(enemy.Damage);
-                ResetDeflectStreak();
-                enemy.Destroy();
-                break;
         }
 
         _hurtCooldown = HurtInvuln;
@@ -199,7 +202,9 @@ public class Player : Animation
 
     public override void Update(GameTime gameTime)
     {
-        _hurtCooldown = Math.Max(0f, _hurtCooldown - (float)gameTime.ElapsedGameTime.TotalSeconds);
+        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;   // ADD
+        _hurtCooldown = Math.Max(0f, _hurtCooldown - dt);
+        _attackCooldownTimer = Math.Max(0f, _attackCooldownTimer - dt);
 
         var keys = Keyboard.GetState();
         bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
@@ -237,6 +242,17 @@ public class Player : Animation
                 // Держим Shift — остаёмся в Defend; отпустили — в Idle
                 if (!keys.IsKeyDown(Keys.LeftShift))
                     ToIdle();
+                
+                if (_shieldBlockTimer > 0f)
+                {
+                    _shieldBlockTimer -= dt;
+                    if (_shieldBlockTimer <= 0f)
+                    {
+                        ChangeAnimation(DefendAnim);
+                        PlayAnimation(inLoop: true, fps: 8);
+                    }
+                }
+                
                 break;
 
             case PlayerState.Attack:
@@ -251,14 +267,15 @@ public class Player : Animation
                     PlayAnimation(inLoop: true, fps: 8);
                     AudioManager.PlaySoundEffect("PlayerDefend", isLoop: false, volume: 1f);
                 }
-                else if (Pressed(Keys.E))
+                else if (Pressed(Keys.E) && _attackCooldownTimer <= 0f) // <<< Гейт по кулдауну
                 {
                     _state = PlayerState.Attack;
                     ChangeAnimation(AttackAnim);
                     PlayAnimation(inLoop: false, fps: 12);
                     AudioManager.PlaySoundEffect("PlayerHit", isLoop: false, volume: 1f);
+
+                    _attackCooldownTimer = AttackMinCooldown; // <<< Старт кулдауна при начале удара
                 }
-                
                 break;
         }
 
@@ -299,7 +316,7 @@ public class Player : Animation
 
         Rectangle body = (BodyCollider != null && BodyCollider.rect != Rectangle.Empty) ? BodyCollider.rect : rect;
 
-        int w = (int)(body.Width * 0.45f);
+        int w = (int)(body.Width * 1.5f);
         int h = body.Height;
         int y = body.Center.Y - h / 2;
 
@@ -320,8 +337,8 @@ public class Player : Animation
             return;
         }
 
-        int w = (int)(rect.Width * 0.3f);
-        int h = (int)(rect.Height * 0.75f);
+        int w = (int)(rect.Width * 0.15f);
+        int h = (int)(rect.Height * 0.5f);
         int x = _facingRight ? rect.Center.X : rect.Center.X - w;
         int y = rect.Center.Y - h / 2;
         ShieldCollider.rect = new Rectangle(x, y, w, h);
@@ -355,15 +372,7 @@ public class Player : Animation
 
         HP = Math.Max(0, HP - amount);
 
-        if (HP > 0)
-        {
-            _state = PlayerState.Hurt;
-            ChangeAnimation(TakingDamageAnim);
-            PlayAnimation(inLoop: false, fps: 12);
-            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
-            
-        }
-        else
+        if (HP <= 0)
         {
             _state = PlayerState.Dead;
             ControlIsEnabled = false;
@@ -371,6 +380,21 @@ public class Player : Animation
             PlayAnimation(inLoop: false, fps: 12);
             AudioManager.PlaySoundEffect("PlayerDeath", isLoop: false, volume: 1f);
             Game1.Instance.TriggerGameOver(this, 2.0);
+            return;
+        }
+
+        // живы:
+        if (_state != PlayerState.Defend)
+        {
+            _state = PlayerState.Hurt;
+            ChangeAnimation(TakingDamageAnim);
+            PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
+        }
+        else
+        {
+            // получаем «штраф» в блоке — остаёмся в Defend (опционально мини-флинч)
+            TriggerShieldBlockFx(); // если хочешь визуальный отклик
         }
     }
 
@@ -403,5 +427,15 @@ public class Player : Animation
     public void ResetDeflectStreak()
     {
         _deflectCount = 0;
+    }
+    
+    private void TriggerShieldBlockFx()
+    {
+        if (_state != PlayerState.Defend) return; // играем только если реально в блоке
+
+        _shieldBlockTimer = _shieldBlockFxTime;
+        ChangeAnimation(ShieldBlockAnim);
+        // сделай fps под свой спрайт-щит: 10–16 обычно ок
+        PlayAnimation(inLoop: false, fps: 14);
     }
 }

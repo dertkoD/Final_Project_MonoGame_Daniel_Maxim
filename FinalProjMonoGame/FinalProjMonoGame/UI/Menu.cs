@@ -25,9 +25,9 @@ public abstract class Menu : IUpdateable, IDrawable
 
     // Optional title
     protected virtual string Title => null;
-    protected virtual Vector2 TitleOffset => new Vector2(0, -160f);
+    protected virtual Vector2 TitleOffset => new Vector2(125f, -125f);
     protected virtual float TitleScale => 2.2f;
-    protected virtual Color TitleColor => Color.White;
+    protected virtual Color TitleColor => Color.Red;
 
     protected readonly List<(Button btn, Vector2 baseCenterOffset)> entries = new();
     
