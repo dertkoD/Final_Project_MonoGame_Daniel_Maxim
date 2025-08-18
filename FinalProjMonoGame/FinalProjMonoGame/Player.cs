@@ -16,12 +16,13 @@ public class Player : Animation
     private const float HurtInvuln = 0.30f;
 
     // тюнинг размеров хитбокса тела
-    private float bodyWScale = 0.55f;
+    private float bodyWScale = 0.25f;
     private float bodyHScale = 0.70f;
     private int bodyYOffset = 6;
-
-    // окно активности удара (если понадобится для таймингов хитбокса)
-    private float attackActiveTime = 0.18f;
+    private int bodyXOffset = 6;
+    
+    private const float AttackMinCooldown = 0.85f;
+    private float _attackCooldownTimer = 0f;
 
     private float _shieldBlockFxTime = 0.25f;   // длительность «удар-спарк» анимации щитом
     private float _shieldBlockTimer  = 0f; 
@@ -192,13 +193,6 @@ public class Player : Animation
                 ResetDeflectStreak();
                 arrow.Destroy();
                 break;
-
-            case Enemy enemy:
-                // общий случай на всякий: контактный урон
-                Damage(enemy.Damage);
-                ResetDeflectStreak();
-                enemy.Destroy();
-                break;
         }
 
         _hurtCooldown = HurtInvuln;
@@ -210,7 +204,7 @@ public class Player : Animation
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;   // ADD
         _hurtCooldown = Math.Max(0f, _hurtCooldown - dt);
-        //_hurtCooldown = Math.Max(0f, _hurtCooldown - (float)gameTime.ElapsedGameTime.TotalSeconds);
+        _attackCooldownTimer = Math.Max(0f, _attackCooldownTimer - dt);
 
         var keys = Keyboard.GetState();
         bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
@@ -273,14 +267,15 @@ public class Player : Animation
                     PlayAnimation(inLoop: true, fps: 8);
                     AudioManager.PlaySoundEffect("PlayerDefend", isLoop: false, volume: 1f);
                 }
-                else if (Pressed(Keys.E))
+                else if (Pressed(Keys.E) && _attackCooldownTimer <= 0f) // <<< Гейт по кулдауну
                 {
                     _state = PlayerState.Attack;
                     ChangeAnimation(AttackAnim);
                     PlayAnimation(inLoop: false, fps: 12);
                     AudioManager.PlaySoundEffect("PlayerHit", isLoop: false, volume: 1f);
+
+                    _attackCooldownTimer = AttackMinCooldown; // <<< Старт кулдауна при начале удара
                 }
-                
                 break;
         }
 
@@ -321,7 +316,7 @@ public class Player : Animation
 
         Rectangle body = (BodyCollider != null && BodyCollider.rect != Rectangle.Empty) ? BodyCollider.rect : rect;
 
-        int w = (int)(body.Width * 0.45f);
+        int w = (int)(body.Width * 1.5f);
         int h = body.Height;
         int y = body.Center.Y - h / 2;
 
@@ -342,8 +337,8 @@ public class Player : Animation
             return;
         }
 
-        int w = (int)(rect.Width * 0.3f);
-        int h = (int)(rect.Height * 0.75f);
+        int w = (int)(rect.Width * 0.15f);
+        int h = (int)(rect.Height * 0.5f);
         int x = _facingRight ? rect.Center.X : rect.Center.X - w;
         int y = rect.Center.Y - h / 2;
         ShieldCollider.rect = new Rectangle(x, y, w, h);
