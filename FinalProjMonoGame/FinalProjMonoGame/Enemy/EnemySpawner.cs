@@ -5,36 +5,33 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
+// Spawns arrows/bombs toward the player at random intervals from given points.
+// Auto-pauses when player is dead or controls are disabled; can be paused externally.
 public class EnemySpawner : IDrawable, IUpdateable
 {
     public bool IsPaused { get; private set; } = false;
-    public void Pause()  => IsPaused = true;
+    public void Pause()  => IsPaused = true; // external pause
     public void Resume() => IsPaused = false;
     
     private readonly Random _rng = new Random();
-    private Vector2[] _points = Array.Empty<Vector2>();
+    private Vector2[] _points = Array.Empty<Vector2>(); // candidate spawn points
     private Player _player;
 
-    // Пауза между спавнами (сек)
+    // Spawn cadence (seconds): randomized per spawn between min/max.
     public float MinInterval { get; set; } = 1.2f;
     public float MaxInterval { get; set; } = 2.5f;
     private float _timer;
 
-    // Скорости/параметры по умолчанию
-    //arrow
+    // Arrow tuning (speed range + lifetime used by Arrow itself).
     public float ArrowSpeedMin { get; set; } = 550f;
     public float ArrowSpeedMax { get; set; } = 750f;
-    public float ArrowLife { get; set; } = 6f;
     
-    //bomb
+    // Bomb tuning (simple ballistic throw configured by gravity + time window).
     public float BombGravity { get; set; } = 450f;
     public float BombTimeMin { get; set; } = 0.9f;
     public float BombTimeMax { get; set; } = 1.6f;
-    public float BombFuse { get; set; } = 2.2f; // время до взрыва
-    public float BombVX { get; set; } = 140f; // горизонтальная скорость
-    public float BombVY { get; set; } = -360f; // начальная вертикальная скорость (вверх)
 
-    // ===== API =====
+    // Wire player + spawn points (falls back to offscreen left/right if none provided).
     public void Init(Player player, params Vector2[] spawnPoints)
     {
         _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -49,13 +46,13 @@ public class EnemySpawner : IDrawable, IUpdateable
         ResetTimer();
     }
 
-    // ===== Update / Draw =====
+    
+    // Countdown → when zero, spawn one enemy and reset timer.
+    // Early-returns if paused, player dead, or input disabled (game over).
     public void Update(GameTime gameTime)
     {
         if (_player == null || _points.Length == 0) return;
-
-        // Авто-стоп спавна, если игрок умер / отключено управление,
-        // а также внешняя ручная пауза.
+        
         if (IsPaused || _player.HP <= 0 || !_player.ControlIsEnabled)
             return;
 
@@ -68,15 +65,18 @@ public class EnemySpawner : IDrawable, IUpdateable
         }
     }
 
+    // Spawner has no visuals; kept to satisfy IDrawable contract.
     public void Draw(SpriteBatch spriteBatch)
     {
     }
 
+    // Randomize next interval within [MinInterval, MaxInterval].
     private void ResetTimer()
     {
         _timer = Lerp(MinInterval, MaxInterval, (float)_rng.NextDouble());
     }
 
+    // Pick a spawn point; ensure it starts offscreen; choose Arrow or Bomb 50/50.
     private void SpawnOne()
     {
         Vector2 spawn = _points[_rng.Next(_points.Length)];
@@ -90,6 +90,7 @@ public class EnemySpawner : IDrawable, IUpdateable
             SpawnBomb(spawn);
     }
 
+    // Arrow: shoot directly toward the player's current position with random speed.
     private void SpawnArrow(Vector2 spawn)
     {
         var arrow = SceneManager.Create<Arrow>();
@@ -104,6 +105,7 @@ public class EnemySpawner : IDrawable, IUpdateable
         arrow.Velocity = toPlayer * speed;
     }
 
+    // Bomb: compute a simple ballistic throw to reach the player in time 't' under gravity 'g'.
     private void SpawnBomb(Vector2 spawn)
     {
         var bomb = SceneManager.Create<Bomb>();
@@ -122,6 +124,7 @@ public class EnemySpawner : IDrawable, IUpdateable
         bomb.Gravity = g;
     }
 
+    // helpers
     private static float Lerp(float a, float b, float t) => a + (b - a) * MathHelper.Clamp(t, 0, 1);
 
     private static bool IsOnScreen(Vector2 p)
@@ -129,6 +132,7 @@ public class EnemySpawner : IDrawable, IUpdateable
         return Game1.ScreenBounds.Contains(new Point((int)p.X, (int)p.Y));
     }
 
+    // If a chosen point is on-screen, push it just outside the nearest edge (with padding).
     private static Vector2 PushOffscreen(Vector2 p, float pad = 64f)
     {
         var r = Game1.ScreenBounds;

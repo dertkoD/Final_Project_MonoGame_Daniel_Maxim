@@ -2,8 +2,11 @@
 
 namespace FinalProjMonoGame;
 
+// Simple projectile enemy. Flies nose-first toward target;
+// after a deflect, switches to a spinning fall and stops hurting the player's body.
 public class Arrow : Enemy
 {
+    // Spinning mode (after deflect); rotation driven by _angularSpeedDeg in Update().
     public bool IsSpinning { get; private set; } = false;
     private float _angularSpeedDeg = 0f;
 
@@ -13,7 +16,10 @@ public class Arrow : Enemy
         Damage = 1;
     }
 
-    // Включаем «падение со спином»
+    // Enter "spin & fall" mode:
+    // - sets new velocity & gravity supplied by caller (combat logic)
+    // - enables visual spin
+    // - ignores player body collision to prevent cheap hits after deflect
     public void StartSpin(Vector2 initialVelocity, float angularSpeedDeg, float gravity)
     {
         Velocity = initialVelocity;
@@ -21,9 +27,11 @@ public class Arrow : Enemy
         _angularSpeedDeg = angularSpeedDeg;
         IsSpinning = true;
 
-        IgnorePlayerCollision = true; // после отбивания телу игрока урон не наносит
+        IgnorePlayerCollision = true; // no body damage while falling/spinning
     }
 
+    // While spinning: advance rotation every frame.
+    // Otherwise: face current velocity vector (readable flight direction).
     protected override void OnUpdate(GameTime gameTime)
     {
         if (IsSpinning)
@@ -32,7 +40,7 @@ public class Arrow : Enemy
         }
         else
         {
-            FaceVelocity(); // до отбивания летит «носом вперёд»
+            FaceVelocity(); // align sprite with travel direction
         }
     }
 }

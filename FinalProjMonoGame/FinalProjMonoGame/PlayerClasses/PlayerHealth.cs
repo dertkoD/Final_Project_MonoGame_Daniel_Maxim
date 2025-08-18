@@ -13,8 +13,8 @@ public sealed class PlayerHealth
     public bool IsDead => HP <= 0;
     public bool CanTakeDamage => _hurtCooldown <= 0f && !IsDead;
 
-    public event Action<int>? OnDamaged;     // passes new HP
-    public event Action<int>? OnHealed;      // passes new HP
+    public event Action<int>? OnDamaged;     
+    public event Action<int>? OnHealed;      
     public event Action? OnDied;
 
     public void Init()

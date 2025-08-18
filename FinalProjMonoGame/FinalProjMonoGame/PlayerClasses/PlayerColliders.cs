@@ -2,6 +2,8 @@
 
 namespace FinalProjMonoGame.PlayerClasses;
 
+// Keeps player hitboxes in sync with the rendered sprite.
+// Body = hurtbox, Sword/Shield = trigger hitboxes used by combat.
 public sealed class PlayerColliders
 {
     public Collider Sword { get; private set; } = null!;
@@ -13,6 +15,7 @@ public sealed class PlayerColliders
     private readonly float _bodyHScale = 0.70f;
     private readonly int _bodyYOffset = 6;
 
+    // Create lightweight trigger colliders; physics resolution happens elsewhere.
     public void Init()
     {
         Body = SceneManager.Create<Collider>();
@@ -25,6 +28,7 @@ public sealed class PlayerColliders
         Shield.isTrigger = true;
     }
 
+    // Recompute rectangles every frame from the current sprite rect and state.
     public void UpdateRects(Player p)
     {
         // Body

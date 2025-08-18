@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 
 namespace FinalProjMonoGame;
 
+// Central audio service: loads songs/SFX via Content, controls volumes, and plays them.
+// Static state makes this a global singleton-like utility for the whole game.
 public class AudioManager
 {
-    static ContentManager content;
+    static ContentManager content; // Content pipeline handle
+    
+    // Registries for loaded assets.
     static Dictionary<string, Song> songs = new Dictionary<string, Song>();
     static Dictionary<string, SoundEffect> soundEffects = new Dictionary<string, SoundEffect>();
+    
+    // Keep references to created SFX instances (useful if you later add StopAll/Cleanup).
     static List<SoundEffectInstance> soundEffectInstances = new List<SoundEffectInstance>();
 
-    // for restore after toggle
+    // For restoring volumes after toggles.
     static float prevSongVolume = 1f;
     static float prevSoundEffectVolume = 1f;
 
+    // Hook the shared ContentManager early (e.g., Game1.LoadContent).
     public AudioManager(ContentManager contentManager)
     {
         content = contentManager;
     }
     
-    // global volume controls
+    // Global volume controls (clamped to [0..1])
     public static float SongVolume
     {
         get => MediaPlayer.Volume;
@@ -32,7 +38,7 @@ public class AudioManager
             float v = Math.Clamp(value, 0f, 1f);
             MediaPlayer.Volume = v;
             if (v > 0f) 
-                prevSongVolume = v;
+                prevSongVolume = v; // remember last non-zero
         }
     }
 
@@ -44,11 +50,11 @@ public class AudioManager
             float v = Math.Clamp(value, 0f, 1f);
             SoundEffect.MasterVolume = v;
             if (v > 0f)
-                prevSoundEffectVolume = v;
+                prevSoundEffectVolume = v; // remember last non-zero
         }
     }
 
-    // separate mutes for music and sfx
+    // Mute toggles
     public static bool MusicEnabled
     {
         get => !MediaPlayer.IsMuted;
@@ -85,6 +91,7 @@ public class AudioManager
     // playback
     public static Song GetSong(string songName) => songs.GetValueOrDefault(songName);
     
+    // Stops current music (if any), sets loop/volume, then plays the requested song.
     public static void PlaySong(string songName, bool isLoop = true, float volume = 1f)
     {
         Song s = GetSong(songName);
@@ -99,6 +106,7 @@ public class AudioManager
         MediaPlayer.Play(s);
     }
 
+    // Creates a fresh instance for a SFX (so multiple can overlap).
     public static SoundEffectInstance? GetSoundEffectInstance(string effectName)
     {
         if (!soundEffects.TryGetValue(effectName, out var sfx) || sfx == null)
@@ -106,6 +114,7 @@ public class AudioManager
         return sfx.CreateInstance();
     }
 
+    // Plays a SFX with basic params; returns the instance if caller wants to stop/modify later.
     public static SoundEffectInstance? PlaySoundEffect(string effectName, bool isLoop = true, float volume = 1f,
         float pitch = 0f, float pan = 0f)
     {
@@ -117,7 +126,7 @@ public class AudioManager
         instance.Pitch = Math.Clamp(pitch, -1f, 1f);
         instance.Pan = Math.Clamp(pan, -1f, 1f);
         
-        soundEffectInstances.Add(instance);
+        soundEffectInstances.Add(instance); // track if you plan to stop/cleanup later
         instance.Play();
         return instance;
     }

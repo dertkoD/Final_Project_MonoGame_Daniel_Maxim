@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace FinalProjMonoGame.PlayerClasses;
 
+/// Thin orchestrator for the player: owns the state machine and delegates to subsystems.
+/// Rendering comes from Animation base; combat/health/colliders live in dedicated classes.
 public class Player : Animation
 {
     // Subsystems
@@ -26,11 +27,12 @@ public class Player : Animation
     public bool FacingRight { get; private set; } = true;
     public PlayerState State { get; private set; } = PlayerState.Idle;
 
+    // Global input toggle (e.g., during death/menus).
     public bool ControlIsEnabled => Controller.ControlsEnabled;
     public void SetControlsEnabled(bool enabled) => Controller.ControlsEnabled = enabled;
 
-    // Events
-    public event System.Action<int>? OnDeflectHeal
+    // Bubble up heal-on-deflect for HUD/SFX hooks.
+    public event Action<int>? OnDeflectHeal
     {
         add { Combat.OnDeflectHeal += value; }
         remove { Combat.OnDeflectHeal -= value; }
@@ -76,9 +78,6 @@ public class Player : Animation
                 Anim.TriggerShieldBlockFx();
             }
         };
-        Health.OnHealed += hp =>
-        {
-        };
         Health.OnDied += () =>
         {
             State = PlayerState.Dead;
@@ -103,7 +102,7 @@ public class Player : Animation
         FacingRight = Controller.FacingRight;
         effect = FacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-        // state machine (kept simple)
+        // state machine
         switch (State)
         {
             case PlayerState.Dead:
