@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 
 namespace FinalProjMonoGame;
 
+// Animated sprite built on top of Sprite. Drives frame stepping from a grid-based spritesheet.
 public class Animation : Sprite
 {
     private SpriteSheet spriteSheet;
     
+    // Grid layout of the current spritesheet (used to compute frame rectangles).
     private int columns;
     private int rows;
 
+    // Current frame indices in the grid (x: column, y: row).
     private int index_x = 0;
     private int index_y = 0;
     
+    // Timing: per-frame accumulator, target fps, loop flag, and play/stop state.
     private double frameTimer = 0;
     private bool animating = false;
     private int fps;
@@ -29,9 +31,7 @@ public class Animation : Sprite
         index_x = 0;
         index_y = 0;
         sourceRectangle = spriteSheet[0, 0];
-
-        // СРАЗУ ставим origin под выбранный способ выравнивания,
-        // чтобы первый Draw был уже корректным.
+        
         switch (originPosition)
         {
             case OriginPosition.TopLeft:
@@ -44,12 +44,11 @@ public class Animation : Sprite
                 );
                 break;
         }
-
-        // Дополнительно — сразу посчитаем dest-rect,
-        // чтобы дебаг-рамки/коллайдеры тоже не мигали
+        
         rect = GetDestRectangle(sourceRectangle.Value);
     }
     
+    // Switches to a new spritesheet and immediately snaps to frame [0,0] with proper origin/rect.
     public void ChangeAnimation(string animationName)
     {
         spriteSheet = new SpriteSheet(SpriteManager.GetSprite(animationName));
@@ -57,7 +56,7 @@ public class Animation : Sprite
         columns = spriteSheet.SpriteSheetInfo.columns;
         rows    = spriteSheet.SpriteSheetInfo.rows;
 
-        InitFirstFrameAndOrigin(); // <-- добавь это
+        InitFirstFrameAndOrigin();
     }
     
     protected override void SetOrigin(OriginPosition originPosition)
@@ -74,6 +73,7 @@ public class Animation : Sprite
         }
     }
     
+    // Starts playback with given fps and loop behavior (idempotent-safe).
     public void PlayAnimation(bool inLoop = true, int fps = 60)
     {
         this.fps = fps;
@@ -100,6 +100,7 @@ public class Animation : Sprite
         return normalized ? remainingTime / (totalFrames * timePerFrame) : remainingTime;
     }
 
+    // Advances frame cursor respecting loop/non-loop; stops at the last frame if not looping.
     public void MoveNextFrame()
     {
         frameTimer = 0;
@@ -121,6 +122,7 @@ public class Animation : Sprite
         }
     }
 
+    // Control surface for external systems (e.g., hit windows): Pause/Resume/Stop/Reset.
     public void PauseAnimation()
     {
         animating = false;
@@ -154,6 +156,7 @@ public class Animation : Sprite
         return false;
     }
 
+    // Per-frame tick: advances frame when enough time passed, refreshes source/dest rectangles.
     public override void Update(GameTime gameTime)
     {
         if (animating)

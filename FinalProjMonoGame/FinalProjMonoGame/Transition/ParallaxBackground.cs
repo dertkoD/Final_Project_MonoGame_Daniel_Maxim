@@ -5,18 +5,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
+// Multi-layer horizontally scrolling background.
+// Each layer fits screen height, scrolls at its own base speed, and tiles in X.
 public class ParallaxBackground : IUpdateable, IDrawable
 {
     private readonly List<Layer> _layers = new List<Layer>();
     private readonly int _screenW;
     private readonly int _screenH;
 
-    // runtime control
+    // Global speed multiplier (can be eased toward a target over duration).
     private float _speedMultiplier = 1f; // global speed multiplier
     private float _speedMultiplierTarget = 1f; // for smooth changes
     private float _speedLerpTime = 0f; // current time
     private float _speedLerpDuration = 0f; // duration
 
+    // Instantiation picks textures by name, scales each to screen height, and stores per-layer settings.
     public ParallaxBackground(IEnumerable<(string spriteName, float speed, float alpha)> config)
     {
         _screenW = Game1.ScreenSize.X;
@@ -39,10 +42,10 @@ public class ParallaxBackground : IUpdateable, IDrawable
         }
     }
 
-    /// <summary>Immediately sets the global speed multiplier (1 = normal, 0 = stop).</summary>
+    //Immediately sets the global speed multiplier (1 = normal, 0 = stop)
     public void SetSpeedMultiplier(float m) => _speedMultiplier = _speedMultiplierTarget = MathHelper.Clamp(m, 0f, 5f);
 
-    /// <summary>Smoothly transitions to target multiplier over duration seconds.</summary>
+    // Smoothly transitions to target multiplier over duration seconds
     public void SmoothSpeed(float targetMultiplier, float durationSec = 0.5f)
     {
         _speedMultiplierTarget = MathHelper.Clamp(targetMultiplier, 0f, 5f);
@@ -50,9 +53,10 @@ public class ParallaxBackground : IUpdateable, IDrawable
         _speedLerpTime = 0f;
     }
 
-    /// <summary>Convenience: smoothly stop parallax.</summary>
+    //Convenience: smoothly stop parallax
     public void SmoothStop(float durationSec = 0.5f) => SmoothSpeed(0f, durationSec);
 
+    // Update: ease multiplier if needed; advance each layer's OffsetX; wrap by tile width.
     public void Update(GameTime gameTime)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -83,6 +87,7 @@ public class ParallaxBackground : IUpdateable, IDrawable
         }
     }
 
+    // Draw: tile each layer across the screen using its scaled width and current offset.
     public void Draw(SpriteBatch spriteBatch)
     {
         foreach (var layer in _layers)
@@ -105,7 +110,7 @@ public class ParallaxBackground : IUpdateable, IDrawable
         }
     }
 
-    // ===== Convenience factory setups for your forest pack =====
+    // Ready-made presets for your forest art packs (menu/game speeds differ).
     public static ParallaxBackground ForestForMenu()
     {
         return new ParallaxBackground(new (string, float, float)[]

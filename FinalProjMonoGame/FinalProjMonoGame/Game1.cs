@@ -21,7 +21,7 @@ public class Game1 : Game
     private SpriteFont _quivertFont;
 
     private KeyboardState _prevKeys;
-
+    
     public Game1()
     {
         Instance = this;
@@ -98,6 +98,8 @@ public class Game1 : Game
         // debug
         SpriteManager.AddSprite("Pixel", "Sprites/pixel");
         
+        // Parallax + ground for menu are added as regular scene nodes,
+        // then MenuTransition animates them instead of switching scenes immediately.
         var parallax = ParallaxBackground.ForestForMenu();
         SceneManager.Add(parallax);
 
@@ -109,25 +111,25 @@ public class Game1 : Game
         groundTrans.SetYOffset(ScreenSize.Y);
         SceneManager.Add(groundTrans);
 
-        // Меню
+        // Main menu is decoupled: we inject callbacks (OnStart) so UI doesn't know scene internals.
         var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
         SceneManager.Add(menu);
 
+        // Transition object orchestrates camera/menu slide-in/out and calls StartGame() on completion.
         var transition = new MenuTransition(
             parallax,
             groundTrans,
             setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
             onComplete: StartGame);
         SceneManager.Add(transition);
-
-        menu.OnStart = () => transition.Begin();
-
-        // 5) По нажатию Start запускаем плавный переход
+        
+        // By pressing Start we start a smooth transition
         menu.OnStart = () => transition.Begin();
         
         AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
     }
 
+    // Update: only minimal global input (exit, audio toggles); all gameplay input should live in scene objects.
     protected override void Update(GameTime gameTime)
     {
         var ks = Keyboard.GetState();
@@ -149,6 +151,7 @@ public class Game1 : Game
         base.Update(gameTime);
     }
 
+    // Draw: single SpriteBatch pass, scene draws itself in correct Z order.
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -160,6 +163,8 @@ public class Game1 : Game
         base.Draw(gameTime);
     }
     
+    // StartGame: builds gameplay scene (parallax, ground, player, spawner, UI).
+    // Kept isolated, so both "New Game" and "Restart" reuse this code path.
     private void StartGame()
     {
         SceneManager.SwitchTo(() =>
@@ -181,7 +186,6 @@ public class Game1 : Game
             
             var player = SceneManager.Create<Player>();
             
-            // Расположение двух spawn-точек СРАЗУ за краями экрана
             var leftSpawn  = new Vector2(-120f, ScreenCenter.Y);
             var rightSpawn = new Vector2(ScreenBounds.Right + 120f, ScreenCenter.Y);
 
@@ -207,10 +211,12 @@ public class Game1 : Game
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
     }
 
+    // TriggerGameOver: delays the overlay to let death animation/audio finish,
+    // then shows end-game UI with its own slide transition without tearing down background.
     public void TriggerGameOver(Player player, double delaySeconds)
     {
-        // Заблокировать управление уже делается в Player при смерти.
-        // Ждём delaySeconds и показываем оверлей-меню.
+        // Blocking control is already done in Player upon death.
+        // Wait for delaySeconds and show overlay menu.
         SceneManager.Add(new OneShotTimer((float)delaySeconds, () =>
         {
             var endMenu = new EndGameScreen(
@@ -218,7 +224,7 @@ public class Game1 : Game
                 onRestart: StartGame,
                 onMainMenu: () =>
                 {
-                    // Полный возврат в главное меню (со «стартовой» анимацией)
+                    // Full return to the main menu (with "start" animation)
                     SceneManager.SwitchTo(() =>
                     {
                         var parallax = ParallaxBackground.ForestForMenu();
@@ -251,14 +257,13 @@ public class Game1 : Game
 
             SceneManager.Add(endMenu);
 
-            // Въезд оверлея как у главного меню, но только меню (фон/землю не трогаем)
             var overlayTrans = new MenuTransition(
                 parallax: null,
                 ground: null,
                 setMenuSlideOffsetY: y => endMenu.SlideOffsetY = y,
                 onComplete: null);
             SceneManager.Add(overlayTrans);
-            overlayTrans.Begin(MenuTransition.Config.MenuEnter(fromTop: true, duration: 0.6f));
+            overlayTrans.Begin(Config.MenuEnter(fromTop: true, duration: 0.6f));
         }));
     }
 }
