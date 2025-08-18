@@ -97,7 +97,6 @@ public class Player : Animation
             bomb.position += Vector2.Normalize(newVel) * 8f;
 
             RegisterDeflect();
-            AudioManager.PlaySoundEffect("DeflectBomb", false, 1f);
             return;
         }
 
@@ -122,7 +121,6 @@ public class Player : Animation
             arrow.StartSpin(bounce, spinSpeedDegPerSec, gravity);
 
             RegisterDeflect();
-            AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
         }
     }
 
@@ -138,7 +136,7 @@ public class Player : Animation
             Damage(1);
             ResetDeflectStreak();
 
-            AudioManager.PlaySoundEffect("DeflectBomb", false, 1f);
+            AudioManager.PlaySoundEffect("Explosion", false, 1f);
             return;
         }
 
@@ -163,7 +161,7 @@ public class Player : Animation
             arrow.StartSpin(bounce, spinSpeedDegPerSec, gravity);
 
             RegisterDeflect();
-            AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
+            AudioManager.PlaySoundEffect("PlayerDefend", false, 1f);
         }
     }
 
@@ -174,7 +172,8 @@ public class Player : Animation
         switch (o)
         {
             case Bomb bomb:
-                bomb.Explode();            // Bomb.Explode сам начислит урон при пересечении
+                bomb.Explode(); // Bomb.Explode сам начислит урон при пересечении
+                AudioManager.PlaySoundEffect("Explosion", false, 1f);
                 ResetDeflectStreak();
                 break;
 
@@ -249,7 +248,6 @@ public class Player : Animation
                     _state = PlayerState.Defend;
                     ChangeAnimation(DefendAnim);
                     PlayAnimation(inLoop: true, fps: 8);
-                    AudioManager.PlaySoundEffect("PlayerDefend", isLoop: false, volume: 1f);
                 }
                 else if (Pressed(Keys.E))
                 {
@@ -258,7 +256,6 @@ public class Player : Animation
                     PlayAnimation(inLoop: false, fps: 12);
                     AudioManager.PlaySoundEffect("PlayerHit", isLoop: false, volume: 1f);
                 }
-                
                 break;
         }
 

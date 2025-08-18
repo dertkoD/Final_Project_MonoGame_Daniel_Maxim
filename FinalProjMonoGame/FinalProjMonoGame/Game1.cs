@@ -79,6 +79,7 @@ public class Game1 : Game
         AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
         AudioManager.AddSoundEffect("PlayerHurt", "Audio/SFX/PlayerHurt");
         AudioManager.AddSoundEffect("PlayerDeath", "Audio/SFX/PlayerDeath");
+        AudioManager.AddSoundEffect("Explosion", "Audio/SFX/Explosion");
 
         
         // enemies
