@@ -57,6 +57,7 @@ public class Game1 : Game
         SpriteManager.AddSprite("Window", "Sprites/MainMenuBackground");
         SpriteManager.AddSprite("Button", "Sprites/ButtonShield");
         SpriteManager.AddSprite("Selector", "Sprites/Selector");
+        SpriteManager.AddSprite("HelpIcon", "Sprites/HelpIcon");
 
         // character animations
         SpriteManager.AddSprite("PlayerIdle", "Sprites/Player/PlayerIdle", columns: 8, rows: 1);
@@ -74,6 +75,9 @@ public class Game1 : Game
         AudioManager.AddSong("GameTrack", "Audio/Music/GameTrack");
         AudioManager.AddSoundEffect("PlayerHit", "Audio/SFX/PlayerHit");
         AudioManager.AddSoundEffect("PlayerDefend", "Audio/SFX/PlayerDefend");
+        AudioManager.AddSoundEffect("PlayerHurt", "Audio/SFX/PlayerHurt");
+        AudioManager.AddSoundEffect("PlayerDeath", "Audio/SFX/PlayerDeath");
+
         
         // enemies
         SpriteManager.AddSprite("Arrow", "Sprites/Enemy/Arrow");

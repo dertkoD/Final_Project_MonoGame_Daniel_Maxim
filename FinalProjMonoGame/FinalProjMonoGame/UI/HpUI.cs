@@ -13,8 +13,7 @@ public class HpUI : UIElement
     public int Spacing = 6;
 
     public Color FullTint = Color.White;
-    public Color EmptyTint = new Color(255, 255, 255, 20);
-
+    
     public HpUI(Player player, string heartSpriteName = "HP")
     {
         _player = player;
@@ -35,14 +34,15 @@ public class HpUI : UIElement
 
         int max = _player.MaxHP;
         int cur = _player.HP;
+        
+        if (cur <= 0 || _heartTexture == null)
+            return;
 
         int heartW = (int)(_heartTexture.Width * Scale);
         int heartH = (int)(_heartTexture.Height * Scale);
-
-        for (int i = 0; i < max; i++)
+        
+        for (int i = 0; i < cur; i++)
         {
-            bool isFull = i < cur;
-
             var dest = new Rectangle(
                 (int)Position.X + i * (heartW + Spacing),
                 (int)Position.Y,
@@ -54,7 +54,7 @@ public class HpUI : UIElement
                 _heartTexture,
                 destinationRectangle: dest,
                 sourceRectangle: null,
-                color: isFull ? FullTint : EmptyTint,
+                color: FullTint,
                 rotation: 0f,
                 origin: Vector2.Zero, 
                 effects: SpriteEffects.None,

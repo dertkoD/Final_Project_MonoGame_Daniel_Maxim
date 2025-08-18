@@ -40,7 +40,7 @@ public class Player : Animation
     private bool _facingRight = true;
 
     private int _deflectCount = 0;
-    public int DeflectHealThreshold { get; private set; } = 3;
+    public int DeflectHealThreshold { get; private set; } = 5;
 
     public bool ControlIsEnabled { get; private set; } = true;
     public void SetControlsEnabled(bool enabled) => ControlIsEnabled = enabled;
@@ -234,8 +234,8 @@ public class Player : Animation
                 break;
 
             case PlayerState.Defend:
-                // Держим Q — остаёмся в Defend; отпустили — в Idle
-                if (!keys.IsKeyDown(Keys.Q))
+                // Держим Shift — остаёмся в Defend; отпустили — в Idle
+                if (!keys.IsKeyDown(Keys.LeftShift))
                     ToIdle();
                 break;
 
@@ -244,7 +244,7 @@ public class Player : Animation
                 break;
 
             case PlayerState.Idle:
-                if (keys.IsKeyDown(Keys.Q))
+                if (keys.IsKeyDown(Keys.LeftShift))
                 {
                     _state = PlayerState.Defend;
                     ChangeAnimation(DefendAnim);
@@ -360,6 +360,8 @@ public class Player : Animation
             _state = PlayerState.Hurt;
             ChangeAnimation(TakingDamageAnim);
             PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
+            
         }
         else
         {
@@ -367,6 +369,7 @@ public class Player : Animation
             ControlIsEnabled = false;
             ChangeAnimation(DeathAnim);
             PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerDeath", isLoop: false, volume: 1f);
             Game1.Instance.TriggerGameOver(this, 2.0);
         }
     }
