@@ -23,6 +23,9 @@ public class Player : Animation
     // окно активности удара (если понадобится для таймингов хитбокса)
     private float attackActiveTime = 0.18f;
 
+    private float _shieldBlockFxTime = 0.25f;   // длительность «удар-спарк» анимации щитом
+    private float _shieldBlockTimer  = 0f; 
+    
     public int MaxHP { get; private set; } = 5;
     public int HP { get; private set; }
 
@@ -36,6 +39,7 @@ public class Player : Animation
     private const string DefendAnim = "PlayerDefend";
     private const string TakingDamageAnim = "TakingDamage";
     private const string DeathAnim = "Death";
+    private const string ShieldBlockAnim = "ShieldBlock";
 
     private bool _facingRight = true;
 
@@ -128,7 +132,10 @@ public class Player : Animation
 
     private void OnShieldTrigger(object o)
     {
-        if (_state != PlayerState.Defend) return;
+        if (_state != PlayerState.Defend)
+        {
+            return;
+        }
 
         if (o is Bomb bomb)
         {
@@ -164,6 +171,8 @@ public class Player : Animation
 
             RegisterDeflect();
             AudioManager.PlaySoundEffect("DeflectArrow", false, 1f);
+            
+            TriggerShieldBlockFx();
         }
     }
 
@@ -199,7 +208,9 @@ public class Player : Animation
 
     public override void Update(GameTime gameTime)
     {
-        _hurtCooldown = Math.Max(0f, _hurtCooldown - (float)gameTime.ElapsedGameTime.TotalSeconds);
+        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;   // ADD
+        _hurtCooldown = Math.Max(0f, _hurtCooldown - dt);
+        //_hurtCooldown = Math.Max(0f, _hurtCooldown - (float)gameTime.ElapsedGameTime.TotalSeconds);
 
         var keys = Keyboard.GetState();
         bool Pressed(Keys k) => keys.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
@@ -237,6 +248,17 @@ public class Player : Animation
                 // Держим Shift — остаёмся в Defend; отпустили — в Idle
                 if (!keys.IsKeyDown(Keys.LeftShift))
                     ToIdle();
+                
+                if (_shieldBlockTimer > 0f)
+                {
+                    _shieldBlockTimer -= dt;
+                    if (_shieldBlockTimer <= 0f)
+                    {
+                        ChangeAnimation(DefendAnim);
+                        PlayAnimation(inLoop: true, fps: 8);
+                    }
+                }
+                
                 break;
 
             case PlayerState.Attack:
@@ -355,15 +377,7 @@ public class Player : Animation
 
         HP = Math.Max(0, HP - amount);
 
-        if (HP >  0 && _state != PlayerState.Defend)
-        {
-            _state = PlayerState.Hurt;
-            ChangeAnimation(TakingDamageAnim);
-            PlayAnimation(inLoop: false, fps: 12);
-            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
-            
-        }
-        else
+        if (HP <= 0)
         {
             _state = PlayerState.Dead;
             ControlIsEnabled = false;
@@ -371,6 +385,21 @@ public class Player : Animation
             PlayAnimation(inLoop: false, fps: 12);
             AudioManager.PlaySoundEffect("PlayerDeath", isLoop: false, volume: 1f);
             Game1.Instance.TriggerGameOver(this, 2.0);
+            return;
+        }
+
+        // живы:
+        if (_state != PlayerState.Defend)
+        {
+            _state = PlayerState.Hurt;
+            ChangeAnimation(TakingDamageAnim);
+            PlayAnimation(inLoop: false, fps: 12);
+            AudioManager.PlaySoundEffect("PlayerHurt", isLoop: false, volume: 1f);
+        }
+        else
+        {
+            // получаем «штраф» в блоке — остаёмся в Defend (опционально мини-флинч)
+            TriggerShieldBlockFx(); // если хочешь визуальный отклик
         }
     }
 
@@ -403,5 +432,15 @@ public class Player : Animation
     public void ResetDeflectStreak()
     {
         _deflectCount = 0;
+    }
+    
+    private void TriggerShieldBlockFx()
+    {
+        if (_state != PlayerState.Defend) return; // играем только если реально в блоке
+
+        _shieldBlockTimer = _shieldBlockFxTime;
+        ChangeAnimation(ShieldBlockAnim);
+        // сделай fps под свой спрайт-щит: 10–16 обычно ок
+        PlayAnimation(inLoop: false, fps: 14);
     }
 }
