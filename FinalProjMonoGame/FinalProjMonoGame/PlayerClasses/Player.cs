@@ -160,7 +160,7 @@ public class Player : Animation
         Anim.PlayIdleLoop();
     }
 
-    // === Backward-compat convenience wrappers (optional) ===
+    // Backward-compat convenience wrappers 
     public void SetMaxHp(int max) => Health.SetMaxHp(max);
     public void Heal(int amount) => Health.Heal(amount);
     public void Damage(int amount) => Health.Damage(amount);

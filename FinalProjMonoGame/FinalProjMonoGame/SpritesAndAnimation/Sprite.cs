@@ -3,21 +3,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
-
+// Base renderable sprite: position/scale/rotation/origin + optional source rectangle.
 public class Sprite : IUpdateable, IDrawable
 {
-    public enum OriginPosition
-    {
-        TopLeft,
-        Center
-    }
-    
+    // World transform and flip state; origin policy (TopLeft or Center).
     public Vector2 position = Vector2.Zero;
     public Vector2 scale = Vector2.One;
     public float rotation = 0.0f;
     public SpriteEffects effect = SpriteEffects.None;
     public OriginPosition originPosition = OriginPosition.Center;
     
+    // Texture data and source rect; origin is recomputed from texture or current frame.
     protected Vector2 origin = Vector2.Zero;
     protected Texture2D texture;
     protected Rectangle? sourceRectangle = null;
@@ -45,6 +41,7 @@ public class Sprite : IUpdateable, IDrawable
         }
     }
 
+    // Update recomputes origin and the destination rect each frame (keeps Draw cheap).
     public virtual void Update(GameTime gameTime)
     {
         SetOrigin(originPosition);
@@ -53,6 +50,7 @@ public class Sprite : IUpdateable, IDrawable
         rect = GetDestRectangle(src);
     }
 
+    // Maps source size + transform into screen-space rectangle (no rotation/flip applied).
     protected Rectangle GetDestRectangle(Rectangle rect)
     {
         int width = (int)(rect.Width * scale.X);
@@ -64,6 +62,7 @@ public class Sprite : IUpdateable, IDrawable
         return new Rectangle(pos_x, pos_y, width, height);
     }
 
+    // Draw uses SpriteBatch with current transform and optional sub-rectangle.
     public virtual void Draw(SpriteBatch _spriteBatch)
     {
         _spriteBatch.Draw(

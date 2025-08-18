@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
+// Renders tiled ground: a top "cap" (e.g., grass) and a repeating "fill" (e.g., earth).
+// Supports horizontal scrolling and a global Y offset for transitions.
 public class GroundLayer : IUpdateable, IDrawable
 {
     private readonly Texture2D _topTile; // e.g., GroundGrass

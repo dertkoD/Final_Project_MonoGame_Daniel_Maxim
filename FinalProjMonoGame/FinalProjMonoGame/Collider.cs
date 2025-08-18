@@ -3,27 +3,34 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FinalProjMonoGame;
 
+// Axis-aligned rectangle collider. Can act as trigger (no physics) or solid collider.
+// Fires events via Notify(); draws debug outline in DEBUG builds.
 public class Collider : Sprite 
 {
-    public Rectangle rect;
-    public bool isTrigger = false;
+    public Rectangle rect; // world-space AABB used for tests and debug draw
+    public bool isTrigger = false;  // true => raise OnTrigger instead of OnCollision
 
+    // Event surface
     public delegate void Somefunction(object o);
     public event Somefunction OnCollision;
     public event Somefunction OnTrigger;
 
-    // for debug
+    // Debug rendering params (wireframe lines built from 1x1 "Pixel" texture).
+
     Color color = Color.White;
     int thickness = 1;
 
     public Collider() : base("Pixel")
     {
     }
+    
+    // AABB vs AABB overlap test. Callers choose when to run it (e.g., per frame).
     public bool Intersects(Collider other)
     {
         return rect.Intersects(other.rect);
     }
 
+    // Dispatches appropriate event based on trigger/solid mode. No physics resolution here.
     public void Notify(object o)
     {
         if (isTrigger)
@@ -32,6 +39,7 @@ public class Collider : Sprite
             OnCollision?.Invoke(o);
     }
 
+    // Debug-only outline of the collider rectangle.
     public override void Draw(SpriteBatch _spriteBatch)
     {
         #if DEBUG
