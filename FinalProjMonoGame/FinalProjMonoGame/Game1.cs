@@ -21,6 +21,9 @@ public class Game1 : Game
 
     private KeyboardState _prevKeys;
 
+    private bool _inGameplay = false;
+    private bool _isPaused = false;
+
     public Game1()
     {
         Instance = this;
@@ -128,21 +131,26 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         var ks = Keyboard.GetState();
-        
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            ks.IsKeyDown(Keys.Escape))
-            Exit();
 
         // toggle M for music, N for SFX
         bool Pressed(Keys k) => ks.IsKeyDown(k) && _prevKeys.IsKeyUp(k);
-        if (Pressed(Keys.M))
-            AudioManager.ToggleMusic();
-        if (Pressed(Keys.N))
-            AudioManager.ToggleSfx();
+        if (Pressed(Keys.M)) AudioManager.ToggleMusic();
+        if (Pressed(Keys.N)) AudioManager.ToggleSfx();
 
-        _prevKeys = ks;
+        if (_inGameplay && Pressed(Keys.P))
+            _isPaused = !_isPaused;
+
+        if (_inGameplay && _isPaused && Pressed(Keys.Escape))
+        {
+            GoToMainMenu();
+            _prevKeys = ks;
+            base.Update(gameTime);
+            return;
+        }
         
-        SceneManager.Instance.Update(gameTime);
+        if (!_isPaused) SceneManager.Instance.Update(gameTime);
+        
+        _prevKeys = ks;
         base.Update(gameTime);
     }
 
@@ -159,6 +167,9 @@ public class Game1 : Game
     
     private void StartGame()
     {
+        _inGameplay = true;
+        _isPaused = false;
+        
         SceneManager.SwitchTo(() =>
         {
             SceneManager.Add(new ParallaxBackground(new (string,float,float)[] {
@@ -176,7 +187,7 @@ public class Game1 : Game
                 overlapPx: 15);
             SceneManager.Add(ground);
             
-            var player =SceneManager.Create<Player>();
+            var player = SceneManager.Create<Player>();
             
             // Расположение двух spawn-точек СРАЗУ за краями экрана
             var leftSpawn  = new Vector2(-120f, ScreenCenter.Y);
@@ -199,6 +210,7 @@ public class Game1 : Game
                 Scale = 1.5f,
                 AlignCenter = true,
             };
+            timer.Reset();
             SceneManager.Add(timer);
         });
         AudioManager.PlaySong("GameTrack", isLoop: true, volume: 0.7f);
@@ -214,6 +226,9 @@ public class Game1 : Game
             onRestart: StartGame,
             onMainMenu: () =>
             {
+                _inGameplay = false;
+                _isPaused = false;
+                
                 SceneManager.SwitchTo(() =>
                 {
                     var parallax = ParallaxBackground.ForestForMenu();
@@ -243,5 +258,39 @@ public class Game1 : Game
                 AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
             });
         SceneManager.Add(delay);
+    }
+
+    private void GoToMainMenu()
+    {
+        _inGameplay = false;
+        _isPaused = false;
+        
+        SceneManager.SwitchTo(() =>
+            {
+                var parallax = ParallaxBackground.ForestForMenu();
+                SceneManager.Add(parallax);
+                
+                var groundTrans = new GroundLayer("GroundGrass", "Earth",
+                    groundY: (int)(ScreenSize.Y * 0.79f),
+                    tileScale: 6,
+                    scrollSpeed: 0f,
+                    overlapPx: 15);
+                groundTrans.SetYOffset(ScreenSize.Y);
+                SceneManager.Add(groundTrans);
+                
+                var menu = new MainMenu(GraphicsDevice, _quivertFont, onStart: null);
+                SceneManager.Add(menu);
+                
+                var transition = new MenuTransition(
+                    parallax,
+                    groundTrans,
+                    setMenuSlideOffsetY: y => menu.SlideOffsetY = y,
+                    startGame: StartGame
+                );
+                SceneManager.Add(transition);
+
+                menu.OnStart = () => transition.Begin();
+            });
+        AudioManager.PlaySong("MainMenuTrack", isLoop: true, volume: 0.7f);
     }
 }
